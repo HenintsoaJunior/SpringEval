@@ -1,0 +1,130 @@
+2025-03-24T02:18:34.012+03:00  INFO 7747 --- [spring] [http-nio-8082-exec-1] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-03-24T02:18:34.012+03:00  INFO 7747 --- [spring] [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-03-24T02:18:34.013+03:00  INFO 7747 --- [spring] [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-03-24T02:18:34.015+03:00 ERROR 7747 --- [spring] [http-nio-8082-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed: java.lang.Error: Unresolved compilation problem: 
+	The method getGlobalDiscountRate() is undefined for the type SettingsResponseDTO.Data
+] with root cause
+
+java.lang.Error: Unresolved compilation problem: 
+	The method getGlobalDiscountRate() is undefined for the type SettingsResponseDTO.Data
+
+	at com.spring.spring.model.SettingsModel.getTaux(SettingsModel.java:57) ~[classes/:na]
+	at com.spring.spring.controller.TauxController.showFormTaux(TauxController.java:30) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:257) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:190) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1088) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:978) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.36.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.36.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1743) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.36.jar:10.1.36]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+
+2025-03-24T02:18:50.891+03:00  INFO 7747 --- [spring] [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+2025-03-24T02:18:50.893+03:00  INFO 7747 --- [spring] [Thread-566] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-03-24T02:18:50.895+03:00  INFO 7747 --- [spring] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-03-24T02:18:50.963+03:00  INFO 7747 --- [spring] [restartedMain] com.spring.spring.Application            : Starting Application using Java 17.0.14 with PID 7747 (/home/henintsoa/Documents/ETUDE/S6/MrRojo/EVAL/spring/target/classes started by henintsoa in /home/henintsoa/Documents/ETUDE/S6/MrRojo/EVAL/spring)
+2025-03-24T02:18:50.963+03:00  INFO 7747 --- [spring] [restartedMain] com.spring.spring.Application            : No active profile set, falling back to 1 default profile: "default"
+2025-03-24T02:18:51.091+03:00  INFO 7747 --- [spring] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8082 (http)
+2025-03-24T02:18:51.092+03:00  INFO 7747 --- [spring] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-03-24T02:18:51.092+03:00  INFO 7747 --- [spring] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-03-24T02:18:51.098+03:00  INFO 7747 --- [spring] [restartedMain] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2025-03-24T02:18:51.098+03:00  INFO 7747 --- [spring] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 134 ms
+2025-03-24T02:18:51.167+03:00  INFO 7747 --- [spring] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-03-24T02:18:51.172+03:00  INFO 7747 --- [spring] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8082 (http) with context path '/'
+2025-03-24T02:18:51.175+03:00  INFO 7747 --- [spring] [restartedMain] com.spring.spring.Application            : Started Application in 0.225 seconds (process running for 21310.894)
+2025-03-24T02:18:51.176+03:00  INFO 7747 --- [spring] [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2025-03-24T02:19:00.610+03:00  INFO 7747 --- [spring] [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-03-24T02:19:00.611+03:00  INFO 7747 --- [spring] [Thread-570] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-03-24T02:19:00.611+03:00  INFO 7747 --- [spring] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-03-24T02:19:00.657+03:00  INFO 7747 --- [spring] [restartedMain] com.spring.spring.Application            : Starting Application using Java 17.0.14 with PID 7747 (/home/henintsoa/Documents/ETUDE/S6/MrRojo/EVAL/spring/target/classes started by henintsoa in /home/henintsoa/Documents/ETUDE/S6/MrRojo/EVAL/spring)
+2025-03-24T02:19:00.657+03:00  INFO 7747 --- [spring] [restartedMain] com.spring.spring.Application            : No active profile set, falling back to 1 default profile: "default"
+2025-03-24T02:19:00.759+03:00  INFO 7747 --- [spring] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8082 (http)
+2025-03-24T02:19:00.760+03:00  INFO 7747 --- [spring] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-03-24T02:19:00.760+03:00  INFO 7747 --- [spring] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-03-24T02:19:00.764+03:00  INFO 7747 --- [spring] [restartedMain] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2025-03-24T02:19:00.764+03:00  INFO 7747 --- [spring] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 106 ms
+2025-03-24T02:19:00.810+03:00  INFO 7747 --- [spring] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-03-24T02:19:00.814+03:00  INFO 7747 --- [spring] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8082 (http) with context path '/'
+2025-03-24T02:19:00.817+03:00  INFO 7747 --- [spring] [restartedMain] com.spring.spring.Application            : Started Application in 0.169 seconds (process running for 21320.536)
+2025-03-24T02:19:00.818+03:00  INFO 7747 --- [spring] [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2025-03-24T02:19:02.220+03:00  INFO 7747 --- [spring] [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-03-24T02:19:02.221+03:00  INFO 7747 --- [spring] [Thread-574] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-03-24T02:19:02.222+03:00  INFO 7747 --- [spring] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-03-24T02:19:02.265+03:00  INFO 7747 --- [spring] [restartedMain] com.spring.spring.Application            : Starting Application using Java 17.0.14 with PID 7747 (/home/henintsoa/Documents/ETUDE/S6/MrRojo/EVAL/spring/target/classes started by henintsoa in /home/henintsoa/Documents/ETUDE/S6/MrRojo/EVAL/spring)
+2025-03-24T02:19:02.265+03:00  INFO 7747 --- [spring] [restartedMain] com.spring.spring.Application            : No active profile set, falling back to 1 default profile: "default"
+2025-03-24T02:19:02.368+03:00  INFO 7747 --- [spring] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8082 (http)
+2025-03-24T02:19:02.368+03:00  INFO 7747 --- [spring] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-03-24T02:19:02.368+03:00  INFO 7747 --- [spring] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-03-24T02:19:02.372+03:00  INFO 7747 --- [spring] [restartedMain] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2025-03-24T02:19:02.372+03:00  INFO 7747 --- [spring] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 106 ms
+2025-03-24T02:19:02.414+03:00  INFO 7747 --- [spring] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-03-24T02:19:02.418+03:00  INFO 7747 --- [spring] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8082 (http) with context path '/'
+2025-03-24T02:19:02.420+03:00  INFO 7747 --- [spring] [restartedMain] com.spring.spring.Application            : Started Application in 0.165 seconds (process running for 21322.139)
+2025-03-24T02:19:02.421+03:00  INFO 7747 --- [spring] [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2025-03-24T02:19:04.220+03:00  INFO 7747 --- [spring] [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-03-24T02:19:04.221+03:00  INFO 7747 --- [spring] [Thread-578] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-03-24T02:19:04.222+03:00  INFO 7747 --- [spring] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-03-24T02:19:04.264+03:00  INFO 7747 --- [spring] [restartedMain] com.spring.spring.Application            : Starting Application using Java 17.0.14 with PID 7747 (/home/henintsoa/Documents/ETUDE/S6/MrRojo/EVAL/spring/target/classes started by henintsoa in /home/henintsoa/Documents/ETUDE/S6/MrRojo/EVAL/spring)
+2025-03-24T02:19:04.264+03:00  INFO 7747 --- [spring] [restartedMain] com.spring.spring.Application            : No active profile set, falling back to 1 default profile: "default"
+2025-03-24T02:19:04.357+03:00  INFO 7747 --- [spring] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8082 (http)
+2025-03-24T02:19:04.358+03:00  INFO 7747 --- [spring] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-03-24T02:19:04.358+03:00  INFO 7747 --- [spring] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-03-24T02:19:04.364+03:00  INFO 7747 --- [spring] [restartedMain] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2025-03-24T02:19:04.364+03:00  INFO 7747 --- [spring] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 100 ms
+2025-03-24T02:19:04.419+03:00  INFO 7747 --- [spring] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-03-24T02:19:04.426+03:00  INFO 7747 --- [spring] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8082 (http) with context path '/'
+2025-03-24T02:19:04.429+03:00  INFO 7747 --- [spring] [restartedMain] com.spring.spring.Application            : Started Application in 0.174 seconds (process running for 21324.148)
+2025-03-24T02:19:04.430+03:00  INFO 7747 --- [spring] [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2025-03-24T02:19:04.678+03:00  INFO 7747 --- [spring] [http-nio-8082-exec-1] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-03-24T02:19:04.679+03:00  INFO 7747 --- [spring] [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-03-24T02:19:04.679+03:00  INFO 7747 --- [spring] [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-03-24T02:19:06.484+03:00  INFO 7747 --- [spring] [http-nio-8082-exec-2] com.spring.spring.model.SettingsModel    : Successfully retrieved global discount rate: 10.0
+2025-03-24T02:19:06.491+03:00  WARN 7747 --- [spring] [http-nio-8082-exec-2] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-8082-exec-2][pages/conf/taux] Deprecated unwrapped fragment expression "fragments/header" found in template pages/conf/taux, line 1, col 6. Please use the complete syntax of fragment expressions instead ("~{fragments/header}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2025-03-24T02:19:06.493+03:00  WARN 7747 --- [spring] [http-nio-8082-exec-2] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-8082-exec-2][pages/conf/taux] Deprecated unwrapped fragment expression "fragments/footer" found in template pages/conf/taux, line 31, col 6. Please use the complete syntax of fragment expressions instead ("~{fragments/footer}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2025-03-24T02:19:13.385+03:00  INFO 7747 --- [spring] [http-nio-8082-exec-10] com.spring.spring.model.SettingsModel    : Successfully updated global discount rate to: 20.0
+2025-03-24T02:19:13.386+03:00  WARN 7747 --- [spring] [http-nio-8082-exec-10] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-8082-exec-10][pages/conf/taux] Deprecated unwrapped fragment expression "fragments/header" found in template pages/conf/taux, line 1, col 6. Please use the complete syntax of fragment expressions instead ("~{fragments/header}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2025-03-24T02:19:13.387+03:00  WARN 7747 --- [spring] [http-nio-8082-exec-10] actStandardFragmentInsertionTagProcessor : [THYMELEAF][http-nio-8082-exec-10][pages/conf/taux] Deprecated unwrapped fragment expression "fragments/footer" found in template pages/conf/taux, line 31, col 6. Please use the complete syntax of fragment expressions instead ("~{fragments/footer}"). The old, unwrapped syntax for fragment expressions will be removed in future versions of Thymeleaf.
+2025-03-24T02:30:40.264+03:00  INFO 7747 --- [spring] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-03-24T02:30:40.318+03:00  INFO 7747 --- [spring] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Admin Dashboard Sidebar</title>
+  <link rel="stylesheet" href="/css/template.css">
+  <link rel="stylesheet" href="/css/tableau.css">
+  <link rel="stylesheet" href="/css/formulaire.css">
+  <link rel="stylesheet" href="/css/pagination.css">
+  <link rel="stylesheet" href="/css/show.css">
+
+  
+  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+  
+  <style>
+    .amount-due {
+      font-size: 28px;
+      font-weight: bold;
+      color: #2c3e50;
+      background-color: #ecf0f1;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 20px 0;
+      text-align: center;
+      border-left: 4px solid #4a90e2;
+  }
+    .success-message {
+        color: #fff;
+        background-color: green;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+    .error-message {
+        color: #fff;
+        background-color: #e74c3c;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+    .field-error {
+        color: #e74c3c;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+    }
+    .input-error {
+        border: 1px solid #e74c3c !important;
+        box-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <!-- Main Header -->
+  <header class="main-header">
+    <div class="logo">
+      <a href="#">Metis</a>
+    </div>
+    <div class="main-nav">
+      <a href="#" class="nav-link active" data-id="dashboard" data-icon="fa-gauge" data-title="Dashboard">Dashboard</a>
+      <a href="#" class="nav-link" data-id="tables" data-icon="fa-table" data-title="Tables">Tables</a>
+      <a href="#" class="nav-link" data-id="file-manager" data-icon="fa-folder" data-title="File Manager">File Manager</a>
+      <div class="dropdown">
+        <a href="#" data-icon="fa-pen-to-square" data-title="Form Elements">Form Elements <i class="fa-solid fa-caret-down"></i></a>
+        <div class="dropdown-content">
+          <a href="#" class="nav-link" data-id="form-elements" data-icon="fa-file-alt" data-title="Form Elements">Form Elements</a>
+          <a href="#" class="nav-link" data-id="form-validation" data-icon="fa-check-square" data-title="Form Validation">Form Validation</a>
+        </div>
+      </div>
+    </div>
+    <div class="header-right">
+      <a href="#" title="Fullscreen"><i class="fa-solid fa-expand"></i></a>
+      <a href="#" class="notification-badge" data-count="5" title="Messages"><i class="fa-solid fa-envelope"></i></a>
+      <a href="#" class="notification-badge" data-count="4" title="Notifications"><i class="fa-solid fa-bell"></i></a>
+      <a href="#" title="Help"><i class="fa-solid fa-circle-question"></i></a>
+      <a href="/api/spring/logout" title="Logout"><i class="fa-solid fa-power-off"></i></a>
+      <a href="#" title="Menu"><i class="fa-solid fa-bars"></i></a>
+      <a href="#" title="Chat"><i class="fa-solid fa-message"></i></a>
+    </div>
+  </header>
+  
+  <!-- Sub Header with Search -->
+  <div class="sub-header">
+    <div class="search-container">
+      <input type="text" placeholder="Live Search...">
+      <button type="submit"><i class="fa-solid fa-search"></i></button>
+    </div>
+    <div class="page-title">
+      <i class="fa-solid fa-gauge"></i> <span id="current-title">Dashboard</span>
+    </div>
+    <div class="settings-btn">
+      <i class="fa-solid fa-cog"></i>
+    </div>
+  </div>
+  
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar show">
+    <div class="user-profile">
+      <div class="avatar">
+        <img src="/images/dancer.jpg" alt="Profile">
+      </div>
+      <div class="user-info">
+        <div class="user-name">Archie</div>
+        <div class="user-role">Administrator</div>
+        <div class="last-access">Last Access :</div>
+        <div class="access-time"><i class="fa-solid fa-calendar"></i> 16 Mar 16:32</div>
+      </div>
+    </div>
+    
+    <div class="menu-header">MENU</div>
+    
+    <ul>
+      <li class="menu-item active" data-id="dashboard">
+        <a th:href="@{/api/spring/dashboard}" class="nav-link" data-icon="fa-gauge" data-title="Dashboard">
+            <i class="fa-solid fa-gauge"></i> Dashboard
+        </a>
+    </li>
+    
+
+      <li class="menu-item" data-id="information-crm">
+        <a href="#" class="serv-btn" data-icon="fa-briefcase" data-title="INFORMATION CRM">
+          <i class="fa-solid fa-briefcase"></i> INFORMATION CRM
+          <span class="fa-solid fa-angle-right second"></span>
+        </a>
+        <ul class="serv-show">
+          <li data-id="client">
+            <a href="/api/spring/clients" class="nav-link" data-id="client" data-icon="fa-user" data-title="Client">
+              <i class="fa-solid fa-user"></i> Client
+            </a>
+          </li>
+          <li data-id="projet">
+            <a href="/api/spring/projects" class="nav-link" data-id="projet" data-icon="fa-folder-open" data-title="Projet">
+              <i class="fa-solid fa-folder-open"></i> Projet
+            </a>
+          </li>
+          <li data-id="client">
+            <a href="/api/spring/leads" class="nav-link" data-id="client" data-icon="fa-user" data-title="Client">
+              <i class="fa-solid fa-user"></i> Lead
+            </a>
+          </li>
+          
+          <li data-id="task">
+            <a href="/api/spring/tasks" class="nav-link" data-id="task" data-icon="fa-list-check" data-title="Task">
+              <i class="fa-solid fa-list-check"></i> Task
+            </a>
+          </li>
+          <li data-id="offer">
+            <a href="/api/spring/offers" class="nav-link" data-id="offer" data-icon="fa-file-signature" data-title="Offer">
+              <i class="fa-solid fa-file-signature"></i> Offer
+            </a>
+          </li>
+          <li data-id="invoice">
+            <a href="/api/spring/invoices" class="nav-link" data-id="invoice" data-icon="fa-file-invoice" data-title="Invoice">
+              <i class="fa-solid fa-file-invoice"></i> Invoice
+            </a>
+          </li>
+          <li data-id="paiements">
+            <a href="/api/spring/payments" class="nav-link" data-id="paiements" data-icon="fa-credit-card" data-title="Paiements">
+              <i class="fa-solid fa-credit-card"></i> Paiements
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="menu-item" data-id="conf">
+        <a href="#" class="form-btn" data-icon="fa-cog" data-title="conf">
+          <i class="fa-solid fa-cog"></i> Conf
+          <span class="fa-solid fa-angle-right third"></span>
+        </a>
+        <ul class="form-show">
+          <li data-id="form-elements">
+            <a href="/api/spring/form-taux" class="nav-link" data-id="form-elements" data-icon="fa-file-alt" data-title="Form Elements">
+              <i class="fa-solid fa-file-alt"></i> taux
+            </a>
+          </li>
+        </ul>
+      </li>
+      
+<!-- 
+      <li class="menu-item" data-id="graph">
+        <a href="#" class="form-btn" data-icon="fa-chart-bar" data-title="Graphiques">
+          <i class="fa-solid fa-chart-bar"></i> Graphiques
+          <span class="fa-solid fa-angle-right second"></span>
+        </a>
+        <ul class="form-show">
+          <li data-id="chart-steps1">
+            <a href="/api/spring/chart1" class="nav-link" data-icon="fa-chart-line" data-title="Évolution Client">
+              <i class="fa-solid fa-chart-line"></i> Graph1
+            </a>
+          </li>
+
+          <li data-id="chart-steps2">
+            <a href="/api/spring/chart2" class="nav-link" data-icon="fa-chart-line" data-title="Évolution Payment">
+              <i class="fa-solid fa-chart-line"></i> Graphe2
+            </a>
+          </li>
+
+          <li data-id="chart-steps3">
+            <a href="/api/spring/chart3" class="nav-link" data-icon="fa-chart-line" data-title="Facture Status">
+              <i class="fa-solid fa-chart-line"></i> Graphe3
+            </a>
+          </li>
+        </ul>
+      </li> -->
+      
+    </ul>
+  </nav>
+  
+  <!-- Main Content -->
+  <div class="content-wrapper">
+  

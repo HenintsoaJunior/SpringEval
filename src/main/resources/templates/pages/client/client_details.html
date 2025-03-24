@@ -1,0 +1,580 @@
+<div th:replace="fragments/header"></div>
+
+<div class="table-container">
+    <div class="client-details">
+        <h2>Détails du Client</h2>
+        
+        <div th:if="${error != null}" class="error-message">
+            <p th:text="${error}"></p>
+        </div>
+
+        <div th:if="${client != null}" class="client-content">
+            <div class="split-container">
+                <!-- Company Info Section -->
+                <div class="company-section card">
+                    <h3>Company</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <strong>Nom:</strong>
+                            <span th:text="${client.company_name != null ? client.company_name : 'ssssssssss'}"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>TVA:</strong>
+                            <span th:text="${client.vat}"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Adresse:</strong>
+                            <span th:text="${client.address}"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Type:</strong>
+                            <span th:text="${client.company_type}"></span>
+                        </div>
+                    </div>
+
+                    <div class="contacts-section" th:if="${client.contacts != null and !client.contacts.empty}">
+                        <h4>Contacts</h4>
+                        <ul class="contacts-list">
+                            <li th:each="contact : ${client.contacts}">
+                                <span th:text="${contact.name} + ' - ' + ${contact.email}"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- User Info Section -->
+                <div class="user-section card">
+                    <h3>Utilisateur</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <strong>Nom:</strong>
+                            <span th:text="${client.user.name}"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Email:</strong>
+                            <span th:text="${client.user.email}"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Tel. Principal:</strong>
+                            <span th:text="${client.user.primary_number}"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Tel. Secondaire:</strong>
+                            <span th:text="${client.user.secondary_number}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Nouveaux éléments : Tasks, Leads, Projects, Invoices -->
+            <div class="client-activity">
+                <h3>Activités du Client</h3>
+                
+                <!-- Tasks Section -->
+                <div class="activity-section card" th:if="${tasks != null and !tasks.empty}">
+                    <h4>Tâches</h4>
+                    <div class="activity-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                  <th>TITLE</th>
+                                  <th>ASSIGNED</th>
+                                  <th>CREATED AT</th>
+                                  <th>DEADLINE</th>
+                                  <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="task : ${tasks}">
+                                    <td>
+                                        <a th:href="@{'/api/spring/task/' + ${task.external_id}}" th:text="${task.title}"></a>
+                                    </td>
+                                    <td th:text="${task.user_assigned_id}"></td>
+                                    <td th:text="${task.created_at}"></td>
+                                    <td th:text="${task.deadline}"></td>
+                                    <td th:text="${task.status_id}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Leads Section -->
+                <div class="activity-section card" th:if="${leads != null and !leads.empty}">
+                    <h4>Leads</h4>
+                    <div class="activity-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>TITLE</th>
+                                    <th>DEADLINE</th>
+                                    <th>CLIENT</th>
+                                    <th>ASSIGNED</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="lead : ${leads}">
+                                    <td>
+                                        <a th:href="@{'/api/spring/lead/' + ${lead.external_id}}" th:text="${lead.title}"></a>
+                                    </td>            
+                                    <td th:text="${#temporals.format(lead.deadline, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${lead.client_id}"></td>
+                                    <td th:text="${lead.user_assigned_id}"></td>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Projects Section -->
+                <div class="activity-section card" th:if="${projects != null and !projects.empty}">
+                    <h4>Projets</h4>
+                    <div class="activity-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                  <th>TITLE</th>
+                                  <th>CLIENT</th>
+                                  <th>DEADLINE</th>
+                                  <th>CREATED AT</th>
+                                  <th>Assigned</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="project : ${projects}">
+                                  <td>
+                                      <a th:href="@{'/api/spring/project/' + ${project.external_id}}" th:text="${project.title}"></a>
+                                  </td>
+                                  <td th:text="${project.client_id}"></td>
+                                  <td th:text="${project.deadline}"></td>
+                                  <td th:text="${project.created_at}"></td>
+                                  <td th:text="${project.user_assigned_id}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Invoices Section -->
+                <!-- <div class="activity-section card" th:if="${invoices != null and !invoices.empty}">
+                    <h4>Factures</h4>
+                    <div class="activity-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Numéro</th>
+                                    <th>Statut</th>
+                                    <th>Date d'envoi</th>
+                                    <th>Date d'échéance</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="invoice : ${invoices}">
+                                    <td th:text="${invoice.invoice_number}"></td>
+                                    <td th:text="${invoice.status}"></td>
+                                    <td th:text="${invoice.sentAt}"></td>
+                                    <td th:text="${#temporals.format(invoice.dueAt, 'dd/MM/yyyy')}"></td>
+                                    <td>
+                                        <a th:href="@{'/api/spring/invoices/' + ${invoice.id}}" class="action-button">Voir</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                 -->
+                <div class="no-data" th:if="${tasks == null or tasks.empty}">
+                    <p>Aucune tâche disponible pour ce client.</p>
+                </div>
+
+                <div class="no-data" th:if="${leads == null or leads.empty}">
+                    <p>Aucun lead disponible pour ce client.</p>
+                </div>
+
+                <div class="no-data" th:if="${projects == null or projects.empty}">
+                    <p>Aucun projet disponible pour ce client.</p>
+                </div>
+
+                <div class="no-data" th:if="${invoices == null or invoices.empty}">
+                    <p>Aucune facture disponible pour ce client.</p>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${client == null}" class="no-data">
+            <p>Aucun détail disponible pour ce client.</p>
+        </div>
+
+        <a href="/api/spring/clients" class="back-button">Retour à la liste</a>
+    </div>
+</div>
+
+<style>
+/* Détails client */
+.client-details {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.client-details h2 {
+  color: #0f172a;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.client-details h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+  border-radius: 2px;
+}
+
+/* Split container pour les informations principales */
+.split-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+/* En-têtes des cartes */
+.card h3 {
+  color: #0f172a;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.card h3::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 20px;
+  background: linear-gradient(180deg, #0ea5e9, #38bdf8);
+  margin-right: 0.75rem;
+  border-radius: 4px;
+}
+
+.card h4 {
+  color: #1e293b;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.75rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.card h4::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+  border-radius: 2px;
+}
+
+/* Grille de détails */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.detail-item {
+  margin-bottom: 0.75rem;
+}
+
+.detail-item strong {
+  display: block;
+  font-weight: 600;
+  color: #64748b;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.detail-item span {
+  color: #334155;
+  font-size: 1rem;
+}
+
+/* Liste de contacts */
+.contacts-section {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.contacts-list {
+  list-style: none;
+  margin-top: 0.75rem;
+}
+
+.contacts-list li {
+  padding: 0.5rem 0;
+  font-size: 0.95rem;
+  border-bottom: 1px dashed rgba(226, 232, 240, 0.8);
+  display: flex;
+  align-items: center;
+}
+
+.contacts-list li::before {
+  content: '•';
+  color: #0ea5e9;
+  font-weight: bold;
+  margin-right: 0.75rem;
+}
+
+/* Activités du client */
+.client-activity {
+  margin-top: 3rem;
+}
+
+.client-activity h3 {
+  color: #0f172a;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.client-activity h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 4px;
+  background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+  border-radius: 2px;
+}
+
+.activity-section {
+  margin-bottom: 2rem;
+  border-radius: 10px;
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+/* Tableaux d'activités */
+.activity-table {
+  overflow-x: auto;
+  margin: 0 -1px;
+}
+
+.activity-table table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.activity-table th {
+  background-color: #f1f5f9;
+  color: #1e293b;
+  text-align: left;
+  padding: 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.activity-table th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.activity-table th:last-child {
+  border-top-right-radius: 8px;
+}
+
+.activity-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  font-size: 0.95rem;
+  transition: background-color 0.15s;
+}
+
+.activity-table tr:last-child td {
+  border-bottom: none;
+}
+
+.activity-table tr:hover td {
+  background-color: #f8fafc;
+}
+
+/* Messages d'état */
+.error-message {
+  padding: 1rem;
+  background-color: #fee2e2;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #ef4444;
+}
+
+.error-message p {
+  color: #b91c1c;
+  font-size: 0.95rem;
+}
+
+.no-data {
+  padding: 2rem;
+  text-align: center;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px dashed #cbd5e1;
+}
+
+.no-data p {
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+/* Boutons */
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.action-button:hover {
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+  transform: translateY(-2px);
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #f1f5f9;
+  color: #334155;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.back-button::before {
+  content: '←';
+  margin-right: 0.5rem;
+}
+
+.back-button:hover {
+  background-color: #e2e8f0;
+  transform: translateX(-3px);
+}
+
+/* Status indicators */
+td:nth-child(3) {
+  position: relative;
+}
+
+td:nth-child(3)::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .split-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .client-details {
+    padding: 1.5rem;
+  }
+  
+  .activity-table th, 
+  .activity-table td {
+    padding: 0.75rem;
+  }
+}
+
+/* Animation d'apparition */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card, .activity-section {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.company-section {
+  animation-delay: 0.1s;
+}
+
+.user-section {
+  animation-delay: 0.2s;
+}
+
+.activity-section:nth-child(1) {
+  animation-delay: 0.3s;
+}
+
+.activity-section:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.activity-section:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+.activity-section:nth-child(4) {
+  animation-delay: 0.6s;
+}
+</style>
+
+
+<div th:replace="fragments/footer"></div>

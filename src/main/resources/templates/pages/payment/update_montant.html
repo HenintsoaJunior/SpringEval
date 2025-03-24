@@ -1,0 +1,68 @@
+<div th:replace="fragments/header"></div>
+
+<div class="form-container">
+    <div class="table-header">
+        <div class="table-icon">☙</div>
+        <h2 class="table-title">Formulaire Montant</h2>
+    </div>
+    
+    <div class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+    <div class="success-message" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+    <div class="amount-due" th:if="${amountDue}" th:text="'Amount Due : ' + (${amountDue})"></div>
+
+    <form action="/api/spring/valid-update" method="post" onsubmit="return validateForm()">
+        <table class="form-table">
+            <tr>
+                <th><label for="montant">Montant:</label></th>
+                <td>
+                    <input type="number" id="montant" name="montant" class="input-error" step="0.01" 
+                           placeholder="Entrez le montant" th:value="${amount}" required />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="hidden" name="paymentExternalId" th:value="${paymentExternalId}" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="form-actions">
+                    <button type="submit" class="submit-btn"><i class="fa-solid fa-save"></i> Enregistrer</button>
+                    <button type="reset" class="reset-btn"><i class="fa-solid fa-eraser"></i> Réinitialiser</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div th:replace="fragments/footer"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function validateForm() {
+        // Récupérer les valeurs
+        const montant = parseFloat(document.getElementById('montant').value);
+        const amountDue = parseFloat(/*[[${amountDue}]]*/ 0); // amountDue en centimes
+        
+        // Vérifier si amountDue existe
+        if (amountDue) {
+            // Convertir amountDue de centimes en euros
+            const amountDueInEuros = amountDue;
+            
+            // Vérifier si le montant saisi dépasse le montant dû
+            if (montant > amountDueInEuros) {
+                alert('Le montant saisi (' + montant + ') est trop élevé. Il ne peut pas dépasser le montant dû (' + amountDueInEuros + ')');
+                return false; // Empêche la soumission du formulaire
+            }
+        }
+        
+        // Vérifier si le montant est positif
+        if (montant <= 0) {
+            alert('Le montant doit être supérieur à 0');
+            return false;
+        }
+        
+        return true; // Permet la soumission si toutes les conditions sont remplies
+    }
+    /*]]>*/
+</script>

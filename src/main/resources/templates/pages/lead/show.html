@@ -1,0 +1,58 @@
+<div th:replace="fragments/header"></div>
+
+    <div class="table-container">
+        <div class="container">
+            <div th:if="${error}" class="error">
+                <p th:text="${error}"></p>
+            </div>
+
+            <div class="task-container" th:if="${lead}">
+                <div class="task-details">
+
+                    <div class="section-header" th:text="${lead.title}"></div>
+                    <dl>
+                        <dt>Description :</dt>
+                        <dd th:utext="${lead.description}"></dd>
+                        <dt>Résultat :</dt>
+                        <dd th:text="${lead.result} ?: 'Non défini'"></dd>
+                    </dl>
+                    <p class="date" th:text="'Créé le : ' + ${lead.created_at}"></p>
+                    <p class="date" th:if="${lead.updated_at}" th:text="'Mis à jour le : ' + ${lead.updated_at}"></p>
+                    <p class="date" th:if="${lead.deleted_at}" th:text="'Supprimé le : ' + ${lead.deleted_at}"></p>
+                </div>
+
+                <div class="task-activity">
+                    <div class="section-header">Informations</div>
+                    <p>
+                        <strong>Assigné à :</strong>
+                        <span th:if="${lead.user}">
+                            <span th:text="${lead.user.name} ?: 'Utilisateur non défini'"></span>
+                            <br>
+                            <span th:text="${lead.user.email} ?: 'Email non défini'"></span>
+                        </span>
+                        <span th:unless="${lead.user}" th:text="'Non défini'"></span>
+                    </p>
+                    <p class="date">
+                        <strong>Créé le :</strong>
+                        <span th:text="${lead.created_at}"></span>
+                    </p>
+                    <p class="date">
+                        <strong>Date limite :</strong>
+                        <span th:text="${lead.deadline}"></span>
+                    </p>
+                    <p>
+                        <strong>Statut :</strong>
+                        <span th:if="${lead.status}" th:text="${lead.status.title} ?: ${lead.status}"></span>
+                        <span th:unless="${lead.status}" th:text="'Non défini'"></span>
+                    </p>
+                    <p>
+                        <strong>Client :</strong>
+                        <span th:if="${lead.client}" th:text="${lead.client.company_name} ?: ${lead.client}"></span>
+                        <span th:unless="${lead.client}" th:text="'Non défini'"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div th:replace="fragments/footer"></div>

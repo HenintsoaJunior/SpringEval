@@ -1,0 +1,31 @@
+<div th:replace="fragments/header"></div>
+
+<div class="form-container">
+    <div class="table-header">
+        <div class="table-icon">☙</div>
+        <h2 class="table-title">Formulaire Taux de remise</h2>
+    </div>
+    
+    <div class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+    <div class="success-message" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+    <form th:action="@{/api/spring/taux/update}" method="post">
+        <table class="form-table">
+            <tr>
+                <th><label for="taux">Taux:</label></th>
+                <td>
+                    <input type="number" id="taux" name="globalDiscountRate" class="input-error" step="0.01" 
+                           placeholder="Entrez taux" th:value="${taux}" required />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="form-actions">
+                    <button type="submit" class="submit-btn"><i class="fa-solid fa-save"></i> Enregistrer</button>
+                    <button type="reset" class="reset-btn"><i class="fa-solid fa-eraser"></i> Réinitialiser</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div th:replace="fragments/footer"></div>
