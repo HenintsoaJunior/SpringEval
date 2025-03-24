@@ -1,0 +1,174 @@
+<div th:replace="fragments/header"></div>
+
+<div th:if="${error != null}" class="error-message">
+    <p th:text="${error}"></p>
+</div>
+
+<div class="filter-container">
+    <form th:action="@{/api/spring/chart2}" method="get">
+        <label for="year">Year:</label>
+        <select name="year" id="year" onchange="this.form.submit()">
+            <option value="">All Years</option>
+            <option th:each="y : ${years}" 
+                    th:value="${y}" 
+                    th:text="${y}"
+                    th:selected="${y == selectedYear}"></option>
+        </select>
+
+        <label for="month">Month:</label>
+        <select name="month" id="month" onchange="this.form.submit()">
+            <option value="">All Months</option>
+            <option value="01" th:selected="${selectedMonth == '01'}">January</option>
+            <option value="02" th:selected="${selectedMonth == '02'}">February</option>
+            <option value="03" th:selected="${selectedMonth == '03'}">March</option>
+            <option value="04" th:selected="${selectedMonth == '04'}">April</option>
+            <option value="05" th:selected="${selectedMonth == '05'}">May</option>
+            <option value="06" th:selected="${selectedMonth == '06'}">June</option>
+            <option value="07" th:selected="${selectedMonth == '07'}">July</option>
+            <option value="08" th:selected="${selectedMonth == '08'}">August</option>
+            <option value="09" th:selected="${selectedMonth == '09'}">September</option>
+            <option value="10" th:selected="${selectedMonth == '10'}">October</option>
+            <option value="11" th:selected="${selectedMonth == '11'}">November</option>
+            <option value="12" th:selected="${selectedMonth == '12'}">December</option>
+        </select>
+    </form>
+</div>
+
+<div th:if="${status != null and status == 'success' and chartDataJson != null}" 
+     class="chart-container">
+    <h2>Payment Statistics</h2>
+    <canvas id="paymentChart"></canvas>
+</div>
+
+<div th:replace="fragments/footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const chartDataJson = /*[[${chartDataJson}]]*/ '[]';
+    const chartData = JSON.parse(chartDataJson);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            if (chartData && Array.isArray(chartData) && chartData.length > 0) {
+                const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                
+                const years = [...new Set(chartData.map(item => item.payment_month.split('-')[0]))].sort();
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const selectedYear = urlParams.get('year') || years[years.length - 1];
+                const selectedMonth = urlParams.get('month');
+
+                // Filter data by year and optionally month
+                let filteredData = chartData.filter(item => item.payment_month.startsWith(selectedYear));
+                if (selectedMonth) {
+                    filteredData = filteredData.filter(item => item.payment_month.endsWith(selectedMonth));
+                }
+
+                // Create unique labels for each payment
+                const labels = filteredData.map(item => {
+                    const [year, month] = item.payment_month.split('-');
+                    const monthName = monthNames[parseInt(month) - 1];
+                    const shortId = item.payment_external_id.substring(0, 8); // Shorten ID for readability
+                    return `${monthName} ${year} (${shortId}...)`;
+                });
+
+                const paidAmounts = filteredData.map(item => parseFloat(item.total_paid_amount) || 0);
+                const invoicedAmounts = filteredData.map(item => parseFloat(item.total_invoiced_amount) || 0);
+                const outstandingAmounts = filteredData.map(item => parseFloat(item.outstanding_amount) || 0);
+                const paymentIds = filteredData.map(item => item.payment_external_id);
+
+                const ctx = document.getElementById('paymentChart').getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Total Paid Amount',
+                            data: paidAmounts,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1,
+                            paymentIds: paymentIds
+                        }, {
+                            label: 'Total Invoiced Amount',
+                            data: invoicedAmounts,
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1,
+                            paymentIds: paymentIds
+                        }, {
+                            label: 'Outstanding Amount',
+                            data: outstandingAmounts,
+                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1,
+                            paymentIds: paymentIds
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: 'Amount' }
+                            },
+                            x: {
+                                title: { display: true, text: 'Payments by Month' },
+                                ticks: {
+                                    autoSkip: false,
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { position: 'top' },
+                            title: {
+                                display: true,
+                                text: `Payment Statistics for ${selectedYear}` + 
+                                      (selectedMonth ? ` - ${monthNames[parseInt(selectedMonth) - 1]}` : '')
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.dataset.label || '';
+                                        const value = context.parsed.y || 0;
+                                        const paymentId = context.dataset.paymentIds[context.dataIndex];
+                                        return `${label}: ${value.toLocaleString()} (ID: ${paymentId})`;
+                                    }
+                                }
+                            },
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'top',
+                                offset: 5,
+                                formatter: function(value, context) {
+                                    return value.toLocaleString();
+                                },
+                                font: { size: 10 },
+                                color: '#000'
+                            }
+                        },
+                        onClick: (event, elements) => {
+                            if (elements.length > 0) {
+                                const element = elements[0];
+                                const datasetIndex = element.datasetIndex;
+                                const index = element.index;
+                                const paymentId = chart.data.datasets[datasetIndex].paymentIds[index];
+                                if (paymentId) {
+                                    window.location.href = `/api/spring/payment/${paymentId}`;
+                                }
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels]
+                });
+            }
+        } catch (e) {
+            console.error('Error processing chart data:', e);
+        }
+    });
+    /*]]>*/
+</script>

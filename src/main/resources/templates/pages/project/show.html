@@ -1,0 +1,57 @@
+<div th:replace="fragments/header"></div>
+
+    <div class="table-container">
+        <div class="container">
+            <!-- Affichage du message d'erreur si présent -->
+            <div th:if="${error}" class="error">
+                <p th:text="${error}"></p>
+            </div>
+
+            <div class="task-container" th:if="${project}">
+                <div class="task-details">
+                    
+                    <div class="section-header" th:text="${project.title}"></div>
+                    <dl>
+                        <dt>Description :</dt>
+                        <dd th:utext="${project.description}"></dd>
+                    </dl>
+                    <p class="date" th:text="'Créé le : ' + ${project.created_at}"></p>
+                    <p class="date" th:if="${project.updated_at}" th:text="'Mis à jour le : ' + ${project.updated_at}"></p>
+                    <p class="date" th:if="${project.deleted_at}" th:text="'Supprimé le : ' + ${project.deleted_at}"></p>
+                </div>
+
+                <div class="task-activity">
+                    <div class="section-header">Informations</div>
+                    <p>
+                        <strong>Assigné à :</strong>
+                        <span th:if="${project.assignee}">
+                            <span th:text="${project.assignee.name} ?: 'Utilisateur non défini'"></span>
+                            <br>
+                            <span th:text="${project.assignee.email} ?: 'Email non défini'"></span>
+                        </span>
+                        <span th:unless="${project.assignee}" th:text="'Non défini'"></span>
+                    </p>
+                    <p class="date">
+                        <strong>Créé le :</strong>
+                        <span th:text="${project.created_at}"></span>
+                    </p>
+                    <p class="date">
+                        <strong>Date limite :</strong>
+                        <span th:text="${project.deadline}"></span>
+                    </p>
+                    <p>
+                        <strong>Statut :</strong>
+                        <span th:if="${project.status}" th:text="${project.status.title} ?: ${project.status}"></span>
+                        <span th:unless="${project.status}" th:text="'Non défini'"></span>
+                    </p>
+                    <p>
+                        <strong>Client :</strong>
+                        <span th:if="${project.client}" th:text="${project.client.company_name} ?: ${project.client}"></span>
+                        <span th:unless="${project.client}" th:text="'Non défini'"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div th:replace="fragments/footer"></div>

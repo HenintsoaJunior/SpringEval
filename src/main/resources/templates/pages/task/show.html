@@ -1,0 +1,62 @@
+<div th:replace="fragments/header"></div>
+
+    <div class="table-container">
+        <div class="container">
+            <!-- Affichage du message d'erreur si présent -->
+            <div th:if="${error}" class="error">
+                <p th:text="${error}"></p>
+            </div>
+
+            <!-- Conteneur principal avec grille -->
+            <div class="task-container" th:if="${task}">
+                <!-- Section des détails (gauche) -->
+                <div class="task-details">
+
+
+                    <!-- Détails de la tâche -->
+                    <div class="section-header" th:text="${task.title}"></div>
+                    <dl>
+                        <dt>Description :</dt>
+                        <dd th:utext="${task.description}"></dd>
+                    </dl>
+                    <p class="date" th:text="'Créé le : ' + ${task.created_at}"></p>
+                    <p class="date" th:if="${task.updated_at}" th:text="'Mis à jour le : ' + ${task.updated_at}"></p>
+                    <p class="date" th:if="${task.deleted_at}" th:text="'Supprimé le : ' + ${task.deleted_at}"></p>
+                </div>
+
+                <!-- Section des informations (droite) -->
+                <div class="task-activity">
+                    <div class="section-header">Informations</div>
+                    <p>
+                        <strong>Assigné à :</strong>
+                        <span th:if="${task.user}">
+                            <span th:text="${task.user.name} ?: 'Utilisateur non défini'"></span>
+                            <br>
+                            <span th:text="${task.user.email} ?: 'Email non défini'"></span>
+                        </span>
+                        <span th:unless="${task.user}" th:text="'Non défini'"></span>
+                    </p>
+                    <p class="date">
+                        <strong>Créé le :</strong>
+                        <span th:text="${task.created_at}"></span>
+                    </p>
+                    <p class="date">
+                        <strong>Date limite :</strong>
+                        <span th:text="${task.deadline}"></span>
+                    </p>
+                    <p>
+                        <strong>Statut :</strong>
+                        <span th:if="${task.status}" th:text="${task.status.title} ?: ${task.status}"></span>
+                        <span th:unless="${task.status}" th:text="'Non défini'"></span>
+                    </p>
+                    <p>
+                        <strong>Projet :</strong>
+                        <span th:if="${task.project}" th:text="${task.project.title} ?: ${task.project}"></span>
+                        <span th:unless="${task.project}" th:text="'Non défini'"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div th:replace="fragments/footer"></div>

@@ -1,0 +1,138 @@
+<div th:replace="fragments/header"></div> <!-- Fragment Thymeleaf simulé -->
+
+<h1>Graphiques 1</h1>
+
+<!-- Affichage des erreurs s'il y en a -->
+<div th:if="${error}" class="error-message">
+    <p th:text="${error}"></p>
+</div>
+
+<div th:if="${chartData != null}" id="charts-wrapper">
+    <div class="chart-container">
+        <div class="chart-title">Montants facturés et pourcentage de paiement par client</div>
+        <canvas id="mainChart"></canvas>
+    </div>
+    
+    <div class="chart-container">
+        <div class="chart-title">Nombre de factures par client</div>
+        <canvas id="invoiceChart"></canvas>
+    </div>
+</div>
+
+<!-- Message si pas de données -->
+<div th:if="${chartData == null and error == null}" class="error-message">
+    <p>Aucune donnée disponible pour le moment.</p>
+</div>
+
+<div th:replace="fragments/footer"></div>
+
+<!-- Script pour générer le graphique -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function() {
+        const chartData = /*[[${chartData}]]*/ null;
+        
+        if (chartData) {
+            // Préparation des données pour le graphique
+            const labels = chartData.map(data => data.company_name);
+            const totalInvoices = chartData.map(data => data.total_invoices);
+            const totalInvoiced = chartData.map(data => data.total_invoiced_amount || 0);
+            const outstanding = chartData.map(data => data.outstanding_amount || 0);
+            const externalIds = chartData.map(data => data.external_id); // Utilisation de external_id au lieu de client_id
+            
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            const mainChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Nombre de factures',
+                        data: totalInvoices,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Montant facturé',
+                        data: totalInvoiced,
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Montant restant',
+                        data: outstanding,
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Statistiques des Clients'
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index; // Index de la barre cliquée
+                            const externalId = externalIds[index]; // Récupérer le external_id correspondant
+                            window.location.href = `/api/spring/client/${externalId}`; // Redirection avec external_id
+                        }
+                    }
+                }
+            });
+
+            const ctxInvoices = document.getElementById('invoiceChart').getContext('2d');
+            const invoiceChart = new Chart(ctxInvoices, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Nombre de factures',
+                        data: totalInvoices,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Nombre de factures'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index; // Index de la barre cliquée
+                            const externalId = externalIds[index]; // Récupérer le external_id correspondant
+                            window.location.href = `/api/spring/client/${externalId}`; // Redirection avec external_id
+                        }
+                    }
+                }
+            });
+        }
+    });
+    /*]]>*/
+</script>
+

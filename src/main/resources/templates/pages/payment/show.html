@@ -1,0 +1,109 @@
+<div th:replace="fragments/header"></div>
+
+<div class="table-container">
+    <div class="table-header">
+        <div class="table-icon">☙</div>
+        <h2 class="table-title">Tableau Dynamique</h2>
+    </div>
+    <div class="table-controls">
+        <!-- Les contrôles de recherche et d'affichage peuvent être réactivés ici si besoin -->
+    </div>
+    <div th:if="${error != null}" class="error-message">
+        <p th:text="${error}"></p>
+    </div>
+
+    <div th:if="${status != null and status == 'success' and payment != null}">
+        <h2>Payment Details</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <td th:text="${payment.id}"></td>
+            </tr>
+            <tr>
+                <th>External ID</th>
+                <td th:text="${payment.external_id}"></td>
+            </tr>
+            <tr>
+                <th>Amount</th>
+                <td th:text="${payment.amount != null ? payment.amount : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td th:text="${payment.description != null ? payment.description : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Payment Source</th>
+                <td th:text="${payment.payment_source != null ? payment.payment_source : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Payment Date</th>
+                <td th:text="${payment.payment_date != null ? #temporals.format(payment.payment_date, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Integration Payment ID</th>
+                <td th:text="${payment.integration_payment_id != null ? payment.integration_payment_id : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Integration Type</th>
+                <td th:text="${payment.integration_type != null ? payment.integration_type : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Invoice ID</th>
+                <td th:text="${payment.invoice_id != null ? payment.invoice_id : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Deleted At</th>
+                <td th:text="${payment.deleted_at != null ? #temporals.format(payment.deleted_at, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Created At</th>
+                <td th:text="${payment.created_at != null ? #temporals.format(payment.created_at, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
+            </tr>
+            <tr>
+                <th>Updated At</th>
+                <td th:text="${payment.updated_at != null ? #temporals.format(payment.updated_at, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
+            </tr>
+        </table>
+
+        <div class="button-container">
+            <a th:href="@{/api/spring/update-montant(externalId=${invoice.external_id}, paymentExternalId=${payment.external_id}, amount=${payment.amount})}">
+                <button type="submit" class="submit-btn"><i class="fa-solid fa-save"></i> Update Amount</button>
+            </a>
+            <a th:href="@{/api/spring/delete(external_id=${payment.external_id})}">
+                <button type="reset" class="reset-btn"><i class="fa-solid fa-eraser"></i> Delete Payment</button>
+            </a>
+        </div>
+
+        <div th:if="${invoice != null}">
+            <h3>Related Invoice</h3>
+            <table>
+                <tr>
+                    <th>Invoice ID</th>
+                    <td th:text="${invoice.id}"></td>
+                </tr>
+                <tr>
+                    <th>External ID</th>
+                    <td th:text="${invoice.external_id}"></td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td th:text="${invoice.status}"></td>
+                </tr>
+                <tr>
+                    <th>Invoice Number</th>
+                    <td th:text="${invoice.invoice_number}"></td>
+                </tr>
+                <tr>
+                    <th>Sent At</th>
+                    <td th:text="${invoice.sent_at}"></td>
+                </tr>
+                <tr>
+                    <th>Due At</th>
+                    <td th:text="${invoice.due_at != null ? #temporals.format(invoice.due_at, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer"></div>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --primary-dark: #4338ca;
+            --secondary: #0ea5e9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --border-radius: 0.5rem;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.5;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin: 2rem 0 1rem;
+        }
+
+        .error-message {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--danger);
+            color: var(--danger);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: var(--border-radius);
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+
+        .stat-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-card h3 i {
+            margin-right: 0.5rem;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-link {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            background-color: rgba(79, 70, 229, 0.1);
+            transition: background-color 0.2s;
+        }
+
+        .stat-link:hover {
+            background-color: rgba(79, 70, 229, 0.2);
+        }
+
+        /* Icon background */
+        .stat-icon-bg {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 4rem;
+            opacity: 0.05;
+            color: var(--primary);
+        }
+
+        /* Charts */
+        .chart-row {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        #charts-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .chart-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            min-height: 300px;
+            position: relative;
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        /* Filters */
+        .filter-container {
+            background-color: var(--gray-100);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-container form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            width: 100%;
+        }
+
+        .filter-container label {
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-right: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-container label i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        .filter-container select {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 0.375rem;
+            background-color: white;
+            color: var(--gray-800);
+            font-size: 0.875rem;
+            min-width: 150px;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .filter-container select:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem;
+            }
+
+            .stats-container {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.75rem;
+            }
+
+            #charts-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                min-height: 250px;
+            }
+            
+            .stat-icon-bg {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+            }
+
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-container select {
+                width: 100%;
+                min-width: unset;
+            }
+        }
+
+        /* Header & Footer Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        footer {
+            background-color: var(--gray-800);
+            color: var(--gray-300);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        /* Animation for loading charts */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        canvas {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="fragments/header"></div>
+    
+    <div class="dashboard-container">
+        <h1>Tableau de Bord</h1>
+        
+        <!-- Affichage des erreurs globales -->
+        <div th:if="${error}" class="error-message">
+            <p th:text="${error}"></p>
+        </div>
+        
+        <!-- Statistiques générales -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3><i class="fas fa-users"></i> Clients</h3>
+                <div class="stat-value" th:text="${totalClients}">0</div>
+                <a th:href="@{/api/spring/clients}" class="stat-link">ALL</a>
+                <i class="fas fa-users stat-icon-bg"></i>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-project-diagram"></i> Projets</h3>
+                <div class="stat-value" th:text="${totalProjects}">0</div>
+                <a th:href="@{/api/spring/projects}" class="stat-link">ALL</a>
+                <i class="fas fa-project-diagram stat-icon-bg"></i>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-tasks"></i> Tâches</h3>
+                <div class="stat-value" th:text="${totalTasks}">0</div>
+                <a th:href="@{/api/spring/tasks}" class="stat-link">ALL</a>
+                <i class="fas fa-tasks stat-icon-bg"></i>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-handshake"></i> Offres</h3>
+                <div class="stat-value" th:text="${totalOffers}">0</div>
+                <a th:href="@{/api/spring/offers}" class="stat-link">ALL</a>
+                <i class="fas fa-handshake stat-icon-bg"></i>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-file-invoice"></i> Factures</h3>
+                <div class="stat-value" th:text="${totalInvoices}">0</div>
+                <a th:href="@{/api/spring/invoices}" class="stat-link">ALL</a>
+                <i class="fas fa-file-invoice stat-icon-bg"></i>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-money-bill-wave"></i> Paiements</h3>
+                <div class="stat-value" th:text="${totalPayments}">0</div>
+                <a th:href="@{/api/spring/payments}" class="stat-link">ALL</a>
+                <i class="fas fa-money-bill-wave stat-icon-bg"></i>
+            </div>
+        </div>
+        
+        <!-- Chart 1: Statistiques des Clients -->
+        <div class="chart-row">
+            <h2><i class="fas fa-chart-pie"></i> Statistiques des Clients</h2>
+            
+            <!-- Erreurs spécifiques à Chart 1 -->
+            <div th:if="${chart1Error}" class="error-message">
+                <p th:text="${chart1Error}"></p>
+            </div>
+            
+            <div th:if="${chart1Data != null}" id="charts-wrapper">
+                <div class="chart-container">
+                    <div class="chart-title">Montants facturés et pourcentage de paiement par client</div>
+                    <canvas id="mainChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Nombre de factures par client</div>
+                    <canvas id="invoiceChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Message si pas de données -->
+            <div th:if="${chart1Data == null and chart1Error == null}" class="error-message">
+                <p>Aucune donnée disponible pour les statistiques clients.</p>
+            </div>
+        </div>
+        
+        <!-- Chart 2: Statistiques des Paiements -->
+        <div class="chart-row">
+            <h2><i class="fas fa-chart-line"></i> Statistiques des Paiements</h2>
+            
+            <!-- Erreurs spécifiques à Chart 2 -->
+            <div th:if="${chart2Error}" class="error-message">
+                <p th:text="${chart2Error}"></p>
+            </div>
+            
+            <!-- Filtres pour Chart 2 -->
+            <div class="filter-container">
+                <form th:action="@{/api/spring/dashboard}" method="get">
+                    <label for="year"><i class="fas fa-calendar-year"></i> Année:</label>
+                    <select name="year" id="year" onchange="this.form.submit()">
+                        <option value="">Toutes les années</option>
+                        <option th:each="y : ${years}" 
+                                th:value="${y}" 
+                                th:text="${y}"
+                                th:selected="${y == selectedYear}"></option>
+                    </select>
+                    
+                    <label for="month"><i class="fas fa-calendar-day"></i> Mois:</label>
+                    <select name="month" id="month" onchange="this.form.submit()">
+                        <option value="">Tous les mois</option>
+                        <option value="01" th:selected="${selectedMonth == '01'}">Janvier</option>
+                        <option value="02" th:selected="${selectedMonth == '02'}">Février</option>
+                        <option value="03" th:selected="${selectedMonth == '03'}">Mars</option>
+                        <option value="04" th:selected="${selectedMonth == '04'}">Avril</option>
+                        <option value="05" th:selected="${selectedMonth == '05'}">Mai</option>
+                        <option value="06" th:selected="${selectedMonth == '06'}">Juin</option>
+                        <option value="07" th:selected="${selectedMonth == '07'}">Juillet</option>
+                        <option value="08" th:selected="${selectedMonth == '08'}">Août</option>
+                        <option value="09" th:selected="${selectedMonth == '09'}">Septembre</option>
+                        <option value="10" th:selected="${selectedMonth == '10'}">Octobre</option>
+                        <option value="11" th:selected="${selectedMonth == '11'}">Novembre</option>
+                        <option value="12" th:selected="${selectedMonth == '12'}">Décembre</option>
+                    </select>
+                    
+                    <!-- Préserver le statut si déjà sélectionné -->
+                    <input type="hidden" name="status" th:value="${selectedStatus}" th:if="${selectedStatus != null}">
+                </form>
+            </div>
+            
+            <div th:if="${chart2Status != null and chart2Status == 'success' and chart2DataJson != null}" 
+                 class="chart-container">
+                <canvas id="paymentChart"></canvas>
+            </div>
+            
+            <!-- Message si pas de données -->
+            <div th:if="${chart2DataJson == null and chart2Error == null}" class="error-message">
+                <p>Aucune donnée disponible pour les statistiques de paiements.</p>
+            </div>
+        </div>
+        
+        <!-- Chart 3: Statistiques des Factures -->
+        <div class="chart-row">
+            <h2><i class="fas fa-chart-bar"></i> Statistiques des Factures</h2>
+            
+            <!-- Erreurs spécifiques à Chart 3 -->
+            <div th:if="${chart3Error}" class="error-message">
+                <p th:text="${chart3Error}"></p>
+            </div>
+            
+            <!-- Filtres pour Chart 3 -->
+            <div class="filter-container">
+                <form th:action="@{/api/spring/dashboard}" method="get">
+                    <label for="status"><i class="fas fa-filter"></i> Statut de facture:</label>
+                    <select name="status" id="status" onchange="this.form.submit()">
+                        <option value="">Tous les statuts</option>
+                        <option th:each="s : ${statuses}" 
+                                th:value="${s}" 
+                                th:text="${s}"
+                                th:selected="${s == selectedStatus}"></option>
+                    </select>
+                    
+                    <!-- Préserver l'année et le mois si déjà sélectionnés -->
+                    <input type="hidden" name="year" th:value="${selectedYear}" th:if="${selectedYear != null}">
+                    <input type="hidden" name="month" th:value="${selectedMonth}" th:if="${selectedMonth != null}">
+                </form>
+            </div>
+            
+            <div th:if="${chart3Status != null and chart3Status == 'success' and chart3DataJson != null}" 
+                 class="chart-container">
+                <canvas id="invoiceChart3"></canvas>
+            </div>
+            
+            <!-- Message si pas de données -->
+            <div th:if="${chart3DataJson == null and chart3Error == null}" class="error-message">
+                <p>Aucune donnée disponible pour les statistiques de factures.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="fragments/footer"></div>
+    
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // Make variables available to external script
+        window.dashboardData = {
+            chart1Data: /*[[${chart1Data}]]*/ null,
+            chart2DataJson: /*[[${chart2DataJson}]]*/ '[]',
+            chart3DataJson: /*[[${chart3DataJson}]]*/ '[]',
+            selectedYear: /*[[${selectedYear}]]*/ '',
+            selectedMonth: /*[[${selectedMonth}]]*/ '',
+            selectedStatus: /*[[${selectedStatus}]]*/ ''
+        };
+        /*]]>*/
+    </script>
+    <script src="/js/chart/chart.js"></script>
+</body>
+</html>

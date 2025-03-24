@@ -1,0 +1,102 @@
+<div th:replace="fragments/header"></div>
+
+    <div th:if="${error != null}" class="error-message">
+        <p th:text="${error}"></p>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="filter-container">
+        <form th:action="@{/api/spring/chart3}" method="get">
+            <label for="status">Invoice Status:</label>
+            <select name="status" id="status" onchange="this.form.submit()">
+                <option value="">All Statuses</option>
+                <option th:each="s : ${statuses}" 
+                        th:value="${s}" 
+                        th:text="${s}"
+                        th:selected="${s == selectedStatus}"></option>
+            </select>
+        </form>
+    </div>
+
+    <div th:if="${status != null and status == 'success' and chartDataJson != null}" 
+         class="chart-container">
+        <h2>Invoice Statistics</h2>
+        <canvas id="invoiceChart"></canvas>
+    </div>
+
+    <div th:replace="fragments/footer"></div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const chartDataJson = /*[[${chartDataJson}]]*/ '[]';
+        const chartData = JSON.parse(chartDataJson);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                if (chartData && Array.isArray(chartData) && chartData.length > 0) {
+                    // Prepare data for the chart
+                    const labels = chartData.map(item => item.invoice_external_id.substring(0, 8) + '...');
+                    const paidAmounts = chartData.map(item => parseFloat(item.total_paid_amount) || 0);
+                    const invoicedAmounts = chartData.map(item => parseFloat(item.total_invoiced_amount) || 0);
+                    const outstandingAmounts = chartData.map(item => parseFloat(item.outstanding_amount) || 0);
+
+                    const ctx = document.getElementById('invoiceChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Total Paid Amount',
+                                data: paidAmounts,
+                                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }, {
+                                label: 'Total Invoiced Amount',
+                                data: invoicedAmounts,
+                                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }, {
+                                label: 'Outstanding Amount',
+                                data: outstandingAmounts,
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Amount'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Invoice ID'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'top'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Invoice Statistics by Invoice ID'
+                                }
+                            }
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error('Error processing chart data:', e);
+            }
+        });
+        /*]]>*/
+</script>

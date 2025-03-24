@@ -1,0 +1,64 @@
+<div th:replace="fragments/header"></div>
+
+    <div class="table-container">
+        <div class="table-header">
+            <div class="table-icon">💼</div>
+            <h2 class="table-title">Liste des Offres</h2>
+        </div>
+    
+        <!-- Affichage des erreurs -->
+        <div th:if="${error != null}" style="color: red;">
+            <p th:text="${error}"></p>
+        </div>
+
+        <!-- Liste des leads -->
+        <div th:if="${leads}">
+            <h1>Liste des Leads</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Client</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="lead : ${leads}">
+                        <td>
+                            <a th:href="@{'/api/spring/lead/' + ${lead.external_id}}" th:text="${lead.title}"></a>
+                        </td>
+                        <td th:if="${lead.client}" th:text="${lead.client.company_name} ?: 'Non défini'"></td>
+                        <td th:unless="${lead.client}">Non défini</td>
+                        <td th:if="${lead.status}" th:text="${lead.status.title} ?: 'Non défini'"></td>
+                        <td th:unless="${lead.status}">Non défini</td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination" th:if="${pagination != null}">
+                <p>Total : <span th:text="${pagination.total}"></span></p>
+                <p>Par page : <span th:text="${pagination.per_page}"></span></p>
+                <p>Page actuelle : <span th:text="${pagination.current_page}"></span></p>
+                <p>Dernière page : <span th:text="${pagination.last_page}"></span></p>
+                <p>De : <span th:text="${pagination.from}"></span> à <span th:text="${pagination.to}"></span></p>
+            
+                <!-- Contrôles de navigation -->
+                <div class="pagination-controls">
+                    <a th:if="${pagination.current_page > 1}"
+                       th:href="@{/api/spring/leads(page=${pagination.current_page - 1})}"
+                       >Précédent</a>
+                    <span th:each="i : ${#numbers.sequence(1, pagination.last_page)}">
+                        <a th:href="@{/api/spring/leads(page=${i})}"
+                           th:text="${i}"
+                           th:classappend="${i == pagination.current_page} ? 'active' : ''"></a>
+                    </span>
+                    <a th:if="${pagination.current_page < pagination.last_page}"
+                       th:href="@{/api/spring/leads(page=${pagination.current_page + 1})}"
+                       >Suivant</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div th:replace="fragments/footer"></div>

@@ -1,0 +1,13 @@
+http://localhost:81/api/client
+
+http://localhost:81/api/project
+
+http://localhost:81/api/task
+
+http://localhost:81/api/offer
+
+http://localhost:81/api/invoice
+
+http://localhost:81/api/invoiceLine
+
+http://localhost:81/api/payment

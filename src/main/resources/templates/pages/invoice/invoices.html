@@ -1,0 +1,61 @@
+<div th:replace="fragments/header"></div>
+
+    <div class="table-container">
+        <div class="table-header">
+            <div class="table-icon">🧾</div>
+            <h2 class="table-title">Liste des Factures</h2>
+        </div>
+
+        <!-- Affichage des erreurs -->
+        <div th:if="${error != null}" style="color: red;">
+            <p th:text="${error}"></p>
+        </div>
+
+        <!-- Tableau des factures -->
+        <table th:if="${invoices != null and !invoices.isEmpty()}">
+            <thead>
+                <tr>
+                    <th>Numéro</th>
+                    <th>Client</th>
+                    <th>Status</th>
+                    <th>Due Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="invoice : ${invoices}">
+                    <td th:text="${invoice.invoice_number}"></td>
+                    <td th:text="${invoice.client != null ? invoice.client.company_name : 'N/A'}"></td>
+                    <td th:text="${invoice.status}"></td>
+                    <td th:text="${invoice.due_at}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Message si aucune facture -->
+        <p th:if="${invoices == null or invoices.isEmpty()}">Aucune facture disponible.</p>
+
+        <div class="pagination" th:if="${pagination != null}">
+            <p>Total : <span th:text="${pagination.total}"></span></p>
+            <p>Par page : <span th:text="${pagination.per_page}"></span></p>
+            <p>Page actuelle : <span th:text="${pagination.current_page}"></span></p>
+            <p>Dernière page : <span th:text="${pagination.last_page}"></span></p>
+            <p>De : <span th:text="${pagination.from}"></span> à <span th:text="${pagination.to}"></span></p>
+        
+            <!-- Contrôles de navigation -->
+            <div class="pagination-controls">
+                <a th:if="${pagination.current_page > 1}"
+                   th:href="@{/api/spring/invoices(page=${pagination.current_page - 1})}"
+                   >Précédent</a>
+                <span th:each="i : ${#numbers.sequence(1, pagination.last_page)}">
+                    <a th:href="@{/api/spring/invoices(page=${i})}"
+                       th:text="${i}"
+                       th:classappend="${i == pagination.current_page} ? 'active' : ''"></a>
+                </span>
+                <a th:if="${pagination.current_page < pagination.last_page}"
+                   th:href="@{/api/spring/invoices(page=${pagination.current_page + 1})}"
+                   >Suivant</a>
+            </div>
+        </div>
+    </div>
+
+<div th:replace="fragments/footer"></div>
