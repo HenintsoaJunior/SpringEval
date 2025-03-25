@@ -17,6 +17,7 @@
                     <th>Montant</th>
                     <th>Client</th>
                     <th>Date de paiement</th>
+                    <th>Details</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,6 +26,9 @@
                     <td th:text="${payment.amount}"></td>
                     <td th:text="${payment.invoice != null ? payment.invoice.client_id : 'N/A'}"></td>
                     <td th:text="${payment.payment_date}"></td>
+                    <td>
+                        <a th:href="@{/api/spring/payment/{externalId}(externalId=${payment.external_id})}">Voir</a>
+                    </td>
                 </tr>
             </tbody>
         </table>

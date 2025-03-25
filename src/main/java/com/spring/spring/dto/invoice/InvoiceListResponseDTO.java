@@ -1,16 +1,13 @@
-package com.spring.spring.dto.offer;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+package com.spring.spring.dto.invoice;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class OfferResponseDTO {
+public class InvoiceListResponseDTO {
     private String status;
-    private OfferDataDTO data;
+    private InvoiceDataDTO data; // Pour les listes paginées
     private Object errors;
 }

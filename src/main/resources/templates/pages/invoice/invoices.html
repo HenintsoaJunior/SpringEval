@@ -19,6 +19,8 @@
                     <th>Client</th>
                     <th>Status</th>
                     <th>Due Date</th>
+                    <th>Details</th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -27,6 +29,9 @@
                     <td th:text="${invoice.client != null ? invoice.client.company_name : 'N/A'}"></td>
                     <td th:text="${invoice.status}"></td>
                     <td th:text="${invoice.due_at}"></td>
+                    <td>
+                        <a th:href="@{/api/spring/invoice/{externalId}(externalId=${invoice.external_id})}">Voir</a>
+                    </td>
                 </tr>
             </tbody>
         </table>

@@ -47,7 +47,6 @@ public class OfferModel {
                 entity,
                 String.class
             );
-            logger.info("Raw response from {}: Status={}, Body={}", apiUrl, rawResponse.getStatusCode(), rawResponse.getBody());
 
             ResponseEntity<OfferResponseDTO> responseEntity = restTemplate.exchange(
                 apiUrl,
@@ -76,30 +75,28 @@ public class OfferModel {
 
     public int totalOffers(HttpSession session) throws Exception {
         String apiUrl = BASE_API_URL;
-
+    
         try {
             HttpHeaders headers = createAuthHeaders(session);
             HttpEntity<String> entity = new HttpEntity<>(headers);
-
-            // Logger la réponse brute
+    
             ResponseEntity<String> rawResponse = restTemplate.exchange(
                 apiUrl,
                 HttpMethod.GET,
                 entity,
                 String.class
             );
-            logger.info("Raw response from {}: Status={}, Body={}", apiUrl, rawResponse.getStatusCode(), rawResponse.getBody());
-
+    
             ResponseEntity<OfferResponseDTO> responseEntity = restTemplate.exchange(
                 apiUrl,
                 HttpMethod.GET,
                 entity,
                 OfferResponseDTO.class
             );
-
+    
             OfferResponseDTO response = responseEntity.getBody();
-            if (response != null && "success".equals(response.getStatus()) && response.getData() != null) {
-                int total = response.getData().getOffers().size();
+            if (response != null && "success".equals(response.getStatus()) && response.getData() != null && response.getData().getPagination() != null) {
+                int total = response.getData().getPagination().getTotal();
                 logger.info("Successfully retrieved total offers: {}", total);
                 return total;
             } else {

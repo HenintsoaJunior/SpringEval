@@ -1,5 +1,7 @@
 package com.spring.spring.model;
 
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +73,44 @@ public class ChartModel {
             throw new Exception("Erreur lors de la récupération des données du graphique 1: " + e.getMessage());
         }
     }
+
+    public Chart1ResponseDTO getChart1Data(HttpSession session,String external_id) throws Exception {
+        try {
+            HttpHeaders headers = createAuthHeaders(session);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<Chart1ResponseDTO> responseEntity = restTemplate.exchange(
+                CHART1_API_URL,
+                HttpMethod.GET,
+                entity,
+                Chart1ResponseDTO.class
+            );
+
+            Chart1ResponseDTO response = responseEntity.getBody();
+            if (response != null && "success".equals(response.getStatus()) && response.getData() != null) {
+                if (external_id != null && !external_id.isEmpty()) {
+                    response.setData(
+                        response.getData().stream()
+                            .filter(data -> external_id.equals(data.getExternal_id()))
+                            .collect(Collectors.toList())
+                    );
+                }
+                
+                logger.info("Successfully retrieved chart1 data with {} entries", response.getData().size());
+                return response;
+            } else {
+                logger.warn("Invalid response from chart1 API");
+                throw new Exception("Réponse invalide de l'API chart1");
+            } 
+        } catch (HttpClientErrorException.Unauthorized e) {
+            logger.warn("Unauthorized access attempt: {}", e.getMessage());
+            throw new Exception("Accès non autorisé");
+        } catch (Exception e) {
+            logger.error("Error retrieving chart1 data: {}", e.getMessage());
+            throw new Exception("Erreur lors de la récupération des données du graphique 1: " + e.getMessage());
+        }
+    }
+
 
     /**
      * Récupère les données pour le graphique 2

@@ -1,109 +1,273 @@
-<div th:replace="fragments/header"></div>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Détails du Paiement</title>
+    <style>
 
-<div class="table-container">
-    <div class="table-header">
-        <div class="table-icon">☙</div>
-        <h2 class="table-title">Tableau Dynamique</h2>
-    </div>
-    <div class="table-controls">
-        <!-- Les contrôles de recherche et d'affichage peuvent être réactivés ici si besoin -->
-    </div>
-    <div th:if="${error != null}" class="error-message">
-        <p th:text="${error}"></p>
-    </div>
+        /* Container principal */
+        .table-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid #000000;
+            padding: 20px;
+        }
 
-    <div th:if="${status != null and status == 'success' and payment != null}">
-        <h2>Payment Details</h2>
-        <table>
-            <tr>
-                <th>ID</th>
-                <td th:text="${payment.id}"></td>
-            </tr>
-            <tr>
-                <th>External ID</th>
-                <td th:text="${payment.external_id}"></td>
-            </tr>
-            <tr>
-                <th>Amount</th>
-                <td th:text="${payment.amount != null ? payment.amount : 'N/A'}"></td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td th:text="${payment.description != null ? payment.description : 'N/A'}"></td>
-            </tr>
-            <tr>
-                <th>Payment Source</th>
-                <td th:text="${payment.payment_source != null ? payment.payment_source : 'N/A'}"></td>
-            </tr>
-            <tr>
-                <th>Payment Date</th>
-                <td th:text="${payment.payment_date != null ? #temporals.format(payment.payment_date, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
-            </tr>
-            <tr>
-                <th>Integration Payment ID</th>
-                <td th:text="${payment.integration_payment_id != null ? payment.integration_payment_id : 'N/A'}"></td>
-            </tr>
-            <tr>
-                <th>Integration Type</th>
-                <td th:text="${payment.integration_type != null ? payment.integration_type : 'N/A'}"></td>
-            </tr>
-            <tr>
-                <th>Invoice ID</th>
-                <td th:text="${payment.invoice_id != null ? payment.invoice_id : 'N/A'}"></td>
-            </tr>
-            <tr>
-                <th>Deleted At</th>
-                <td th:text="${payment.deleted_at != null ? #temporals.format(payment.deleted_at, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
-            </tr>
-            <tr>
-                <th>Created At</th>
-                <td th:text="${payment.created_at != null ? #temporals.format(payment.created_at, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
-            </tr>
-            <tr>
-                <th>Updated At</th>
-                <td th:text="${payment.updated_at != null ? #temporals.format(payment.updated_at, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
-            </tr>
-        </table>
+        /* En-tête */
+        .table-header {
+            border-bottom: 2px solid #000000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
 
-        <div class="button-container">
-            <a th:href="@{/api/spring/update-montant(externalId=${invoice.external_id}, paymentExternalId=${payment.external_id}, amount=${payment.amount})}">
-                <button type="submit" class="submit-btn"><i class="fa-solid fa-save"></i> Update Amount</button>
-            </a>
-            <a th:href="@{/api/spring/delete(external_id=${payment.external_id})}">
-                <button type="reset" class="reset-btn"><i class="fa-solid fa-eraser"></i> Delete Payment</button>
-            </a>
+        .table-icon {
+            font-size: 18pt;
+            margin-right: 10px;
+        }
+
+        .table-title {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #000000;
+            text-transform: uppercase;
+        }
+
+        .table-controls {
+            margin-bottom: 20px;
+        }
+
+        /* Message d'erreur */
+        .error-message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #d93025;
+            background-color: #fce8e6;
+            color: #d93025;
+            font-size: 11pt;
+        }
+
+        /* Titres */
+        h2 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 20px 0 10px;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 20px 0 10px;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 5px;
+        }
+
+        /* Tableaux */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #000000;
+            text-align: left;
+            font-size: 11pt;
+        }
+
+        th {
+            background-color: #e6e6e6;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        td {
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Boutons */
+        .button-container {
+            margin: 20px 0;
+            text-align: right;
+        }
+
+        .submit-btn, .reset-btn {
+            padding: 8px 15px;
+            margin-left: 10px;
+            font-size: 11pt;
+            border: 1px solid #000000;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            background-color: #e6e6e6;
+        }
+
+        .submit-btn:hover {
+            background-color: #d9d9d9;
+        }
+
+        .reset-btn {
+            background-color: #ffffff;
+        }
+
+        .reset-btn:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .table-title {
+                font-size: 16pt;
+            }
+
+            th, td {
+                font-size: 10pt;
+                padding: 6px;
+            }
+
+            .submit-btn, .reset-btn {
+                font-size: 10pt;
+                padding: 6px 10px;
+            }
+        }
+
+        /* Impression */
+        @media print {
+            body {
+                padding: 0;
+            }
+            .table-container {
+                border: none;
+            }
+            .button-container {
+                display: none; /* Masquer les boutons à l'impression */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="fragments/header"></div>
+
+    <div class="table-container">
+        <div class="table-header">
+            <div class="table-icon">☙</div>
+            <h2 class="table-title">Tableau Dynamique</h2>
+        </div>
+        <div class="table-controls">
+            <!-- Les contrôles de recherche et d'affichage peuvent être réactivés ici si besoin -->
+        </div>
+        <div th:if="${error != null}" class="error-message">
+            <p th:text="${error}"></p>
         </div>
 
-        <div th:if="${invoice != null}">
-            <h3>Related Invoice</h3>
+        <div th:if="${status != null and status == 'success' and payment != null}">
+            <h2>Payment Details</h2>
             <table>
                 <tr>
-                    <th>Invoice ID</th>
-                    <td th:text="${invoice.id}"></td>
+                    <th>ID</th>
+                    <td th:text="${payment.id}"></td>
                 </tr>
                 <tr>
                     <th>External ID</th>
-                    <td th:text="${invoice.external_id}"></td>
+                    <td th:text="${payment.external_id}"></td>
                 </tr>
                 <tr>
-                    <th>Status</th>
-                    <td th:text="${invoice.status}"></td>
+                    <th>Amount</th>
+                    <td th:text="${payment.amount != null ? payment.amount : 'N/A'}"></td>
                 </tr>
                 <tr>
-                    <th>Invoice Number</th>
-                    <td th:text="${invoice.invoice_number}"></td>
+                    <th>Description</th>
+                    <td th:text="${payment.description != null ? payment.description : 'N/A'}"></td>
                 </tr>
                 <tr>
-                    <th>Sent At</th>
-                    <td th:text="${invoice.sent_at}"></td>
+                    <th>Payment Source</th>
+                    <td th:text="${payment.payment_source != null ? payment.payment_source : 'N/A'}"></td>
                 </tr>
                 <tr>
-                    <th>Due At</th>
-                    <td th:text="${invoice.due_at != null ? #temporals.format(invoice.due_at, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
+                    <th>Payment Date</th>
+                    <td th:text="${payment.payment_date != null ? #temporals.format(payment.payment_date, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
+                </tr>
+                <tr>
+                    <th>Integration Payment ID</th>
+                    <td th:text="${payment.integration_payment_id != null ? payment.integration_payment_id : 'N/A'}"></td>
+                </tr>
+                <tr>
+                    <th>Integration Type</th>
+                    <td th:text="${payment.integration_type != null ? payment.integration_type : 'N/A'}"></td>
+                </tr>
+                <tr>
+                    <th>Invoice ID</th>
+                    <td th:text="${payment.invoice_id != null ? payment.invoice_id : 'N/A'}"></td>
+                </tr>
+                <tr>
+                    <th>Deleted At</th>
+                    <td th:text="${payment.deleted_at != null ? #temporals.format(payment.deleted_at, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
+                </tr>
+                <tr>
+                    <th>Created At</th>
+                    <td th:text="${payment.created_at != null ? #temporals.format(payment.created_at, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
+                </tr>
+                <tr>
+                    <th>Updated At</th>
+                    <td th:text="${payment.updated_at != null ? #temporals.format(payment.updated_at, 'yyyy-MM-dd HH:mm:ss Z') : 'N/A'}"></td>
                 </tr>
             </table>
+
+            <div class="button-container">
+                <a th:href="@{/api/spring/update-montant(externalId=${invoice.external_id}, paymentExternalId=${payment.external_id}, amount=${payment.amount})}">
+                    <button type="submit" class="submit-btn"><i class="fa-solid fa-save"></i> Update Amount</button>
+                </a>
+                <a th:href="@{/api/spring/delete(external_id=${payment.external_id})}">
+                    <button type="reset" class="reset-btn"><i class="fa-solid fa-eraser"></i> Delete Payment</button>
+                </a>
+            </div>
+
+            <div th:if="${invoice != null}">
+                <h3>Related Invoice</h3>
+                <table>
+                    <tr>
+                        <th>Invoice ID</th>
+                        <td th:text="${invoice.id}"></td>
+                    </tr>
+                    <tr>
+                        <th>External ID</th>
+                        <td th:text="${invoice.external_id}"></td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td th:text="${invoice.status}"></td>
+                    </tr>
+                    <tr>
+                        <th>Invoice Number</th>
+                        <td th:text="${invoice.invoice_number}"></td>
+                    </tr>
+                    <tr>
+                        <th>Sent At</th>
+                        <td th:text="${invoice.sent_at}"></td>
+                    </tr>
+                    <tr>
+                        <th>Due At</th>
+                        <td th:text="${invoice.due_at != null ? invoice.due_at : 'N/A'}"></td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
-<div th:replace="fragments/footer"></div>
+    <div th:replace="fragments/footer"></div>
+</body>
+</html>

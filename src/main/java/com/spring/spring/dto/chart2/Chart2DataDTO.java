@@ -10,7 +10,6 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Chart2DataDTO {
     private String payment_month;
-    private String payment_external_id;
     private Integer total_payments;
     private Integer total_invoices;
     private String total_paid_amount;

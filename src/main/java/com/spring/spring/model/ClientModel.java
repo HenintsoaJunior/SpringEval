@@ -16,6 +16,8 @@ import com.spring.spring.dto.mapping.ClientDTO;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.util.List;
+
 @Service
 public class ClientModel {
     
@@ -123,6 +125,12 @@ public class ClientModel {
         }
     }
 
+    /**
+     * Compte le nombre total de clients
+     * @param session Session HTTP contenant le token d'authentification
+     * @return Nombre total de clients
+     * @throws Exception en cas d'erreur lors de la récupération des données
+     */
     public int totalClients(HttpSession session) throws Exception {
         String apiUrl = BASE_API_URL;
         
@@ -138,7 +146,7 @@ public class ClientModel {
             ).getBody();
             
             if (response != null && "success".equals(response.getStatus()) && response.getData() != null) {
-                int total = response.getData().getClients().size(); // On compte tous les clients retournés
+                int total = response.getData().getClients().size();
                 logger.info("Successfully retrieved total clients: {}", total);
                 return total;
             } else {
@@ -151,6 +159,44 @@ public class ClientModel {
         } catch (Exception e) {
             logger.error("Error retrieving total clients: {}", e.getMessage());
             throw new Exception("Erreur lors de la récupération du nombre total de clients: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Récupère la liste complète des clients sans pagination
+     * @param session Session HTTP contenant le token d'authentification
+     * @return Liste de tous les clients
+     * @throws Exception en cas d'erreur lors de la récupération des données
+     */
+    public List<ClientDTO> getAllClients(HttpSession session) throws Exception {
+        String apiUrl = BASE_API_URL; // Pas de paramètre de pagination
+        
+        try {
+            HttpHeaders headers = createAuthHeaders(session);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            
+            ClientResponseDTO response = restTemplate.exchange(
+                apiUrl,
+                HttpMethod.GET,
+                entity,
+                ClientResponseDTO.class
+            ).getBody();
+            
+            if (response != null && "success".equals(response.getStatus()) && response.getData() != null) {
+                List<ClientDTO> allClients = response.getData().getClients();
+                logger.info("Successfully retrieved {} clients", allClients.size());
+                return allClients;
+            } else {
+                logger.warn("Invalid response from API when retrieving all clients");
+                throw new Exception("Impossible de récupérer la liste des clients");
+            }
+            
+        } catch (HttpClientErrorException.Unauthorized e) {
+            logger.warn("Unauthorized access attempt: {}", e.getMessage());
+            throw new Exception("Accès non autorisé");
+        } catch (Exception e) {
+            logger.error("Error retrieving all clients: {}", e.getMessage());
+            throw new Exception("Erreur lors de la récupération de tous les clients: " + e.getMessage());
         }
     }
 }

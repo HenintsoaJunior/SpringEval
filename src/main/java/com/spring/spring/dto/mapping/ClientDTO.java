@@ -25,14 +25,11 @@ public class ClientDTO {
     private String client_number;
     private Long user_id;
     private Long industry_id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSX")
-    private ZonedDateTime deleted_at;
+    private String deleted_at;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSX")
-    private ZonedDateTime created_at;
+    private String created_at;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSX")
-    private ZonedDateTime updated_at;
+    private String updated_at;
     private UserDTO user;
     private List<TaskDTO> tasks;
     private List<LeadDTO> leads;
