@@ -37,14 +37,14 @@ public class PaymentController {
         try {
             String successMessage = paymentModel.deletePayment(externalId, session);
             redirectAttributes.addFlashAttribute("successMessage", successMessage);
-            return "redirect:/api/spring/chart2";
+            return "redirect:/api/spring/dashboard";
         } catch (Exception e) {
             logger.error("Error in deletePayment: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             if (e.getMessage().contains("non autorisé")) {
                 return "redirect:/";
             }
-            return "redirect:/api/spring/chart2";
+            return "redirect:/api/spring/dashboard";
         }
     }
 

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.spring.spring.dto.invoice.InvoiceDTO;
+import com.spring.spring.dto.invoice.InvoiceListResponseDTO;
 import com.spring.spring.dto.invoice.InvoiceResponseDTO;
 
 import jakarta.servlet.http.HttpSession;
@@ -36,24 +38,24 @@ public class InvoiceModel {
      * Récupère toutes les factures avec pagination
      * @param page Numéro de la page
      * @param session Session HTTP contenant le token d'authentification
-     * @return InvoiceResponseDTO contenant la liste des factures et les informations de pagination
+     * @return InvoiceListResponseDTO contenant la liste des factures et les informations de pagination
      * @throws Exception en cas d'erreur
      */
-    public InvoiceResponseDTO getAll(int page, HttpSession session) throws Exception {
+    public InvoiceListResponseDTO getAll(int page, HttpSession session) throws Exception {
         String apiUrl = BASE_API_URL + "?page=" + page;
 
         try {
             HttpHeaders headers = createAuthHeaders(session);
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
-            InvoiceResponseDTO response = restTemplate.exchange(
+            InvoiceListResponseDTO response = restTemplate.exchange(
                 apiUrl,
                 HttpMethod.GET,
                 entity,
-                InvoiceResponseDTO.class
+                InvoiceListResponseDTO.class
             ).getBody();
 
-            if (response != null && "success".equals(response.getStatus())) {
+            if (response != null && "success".equals(response.getStatus()) && response.getData() != null) {
                 logger.info("Successfully retrieved {} invoices for page {}", 
                     response.getData().getInvoices().size(), page);
                 return response;
@@ -71,6 +73,50 @@ public class InvoiceModel {
     }
 
     /**
+     * Récupère les détails d'une facture spécifique par son externalId
+     * @param externalId L'identifiant externe de la facture
+     * @param session Session HTTP contenant le token d'authentification
+     * @return InvoiceDTO contenant les détails de la facture
+     * @throws Exception en cas d'erreur lors de la récupération des données
+     */
+    public InvoiceDTO getDetails(String externalId, HttpSession session) throws Exception {
+        String apiUrl = BASE_API_URL + "?external_id=" + externalId;
+        
+        try {
+            HttpHeaders headers = createAuthHeaders(session);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            
+            InvoiceResponseDTO response = restTemplate.exchange(
+                apiUrl,
+                HttpMethod.GET,
+                entity,
+                InvoiceResponseDTO.class
+            ).getBody();
+            
+            if (response != null && "success".equals(response.getStatus()) && response.getData() != null) {
+                InvoiceDTO invoice = response.getData();
+                if (externalId.equals(invoice.getExternal_id())) {
+                    logger.info("Successfully retrieved details for invoice with externalId: {}", externalId);
+                    return invoice;
+                } else {
+                    logger.warn("No invoice found with externalId: {}", externalId);
+                    throw new Exception("Aucune facture trouvée avec cet identifiant externe");
+                }
+            } else {
+                logger.warn("Invalid response from API for externalId: {}", externalId);
+                throw new Exception("Réponse invalide de l'API");
+            }
+            
+        } catch (HttpClientErrorException.Unauthorized e) {
+            logger.warn("Unauthorized access attempt for invoice {}: {}", externalId, e.getMessage());
+            throw new Exception("Accès non autorisé");
+        } catch (Exception e) {
+            logger.error("Error retrieving invoice details for externalId {}: {}", externalId, e.getMessage());
+            throw new Exception("Erreur lors de la récupération des détails de la facture: " + e.getMessage());
+        }
+    }
+
+    /**
      * Récupère le nombre total de factures sans pagination
      * @param session Session HTTP contenant le token d'authentification
      * @return Le nombre total de factures
@@ -83,11 +129,11 @@ public class InvoiceModel {
             HttpHeaders headers = createAuthHeaders(session);
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
-            InvoiceResponseDTO response = restTemplate.exchange(
+            InvoiceListResponseDTO response = restTemplate.exchange(
                 apiUrl,
                 HttpMethod.GET,
                 entity,
-                InvoiceResponseDTO.class
+                InvoiceListResponseDTO.class
             ).getBody();
 
             if (response != null && "success".equals(response.getStatus()) && response.getData() != null) {

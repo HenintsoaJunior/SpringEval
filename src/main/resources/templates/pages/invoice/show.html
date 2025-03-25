@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Détails de la Facture</title>
+    <link rel="stylesheet" href="/css/retro.css">
+</head>
+<body>
+    <div th:replace="fragments/header"></div>
+
+    <div class="table-container">
+        <!-- Message d'erreur -->
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <!-- Détails de la facture -->
+        <div th:if="${status == 'success' && invoice != null}" class="card">
+            <div class="card-header">
+                <h2>Détails de la Facture #<span th:text="${invoice.invoice_number}"></span></h2>
+            </div>
+            <div class="card-body">
+                <!-- Informations principales -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>ID Externe:</strong> <span th:text="${invoice.external_id}"></span></p>
+                        <p><strong>Statut:</strong> <span th:text="${invoice.status}"></span></p>
+                        <p><strong>Date d'envoi:</strong> <span th:text="${invoice.sent_at}"></span></p>
+                        <p><strong>Date d'échéance:</strong> <span th:text="${invoice.due_at}"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Type d'intégration:</strong> <span th:text="${invoice.integration_type}"></span></p>
+                        <p><strong>Date de création:</strong> <span th:text="${invoice.created_at}"></span></p>
+                        <p><strong>Dernière modification:</strong> <span th:text="${invoice.updated_at}"></span></p>
+                    </div>
+                </div>
+
+                <!-- Informations du client -->
+                <div th:if="${client != null}" class="mt-4">
+                    <h3>Client</h3>
+                    <p><strong>Nom:</strong> <span th:text="${client.company_name}"></span></p>
+                    <p><strong>Email:</strong> <span th:text="${client.address} ?: 'Non disponible'"></span></p>
+                </div>
+
+                <!-- Lignes de facture -->
+                <div th:if="${invoiceLines != null && !invoiceLines.isEmpty()}" class="mt-4">
+                    <h3>Lignes de facture</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Quantité</th>
+                                <th>Prix unitaire</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="line : ${invoiceLines}">
+                                <td th:text="${line.title}"></td>
+                                <td th:text="${line.quantity}"></td>
+                                <td th:text="${line.price}"></td>
+                                <td th:text="${line.quantity * line.price}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- Ajout du total -->
+                    <div class="invoice-total">
+                        <p>Total: <span th:text="${total}"></span></p>
+                    </div>
+                </div>
+
+                <!-- Paiements -->
+                <div th:if="${payments != null && !payments.isEmpty()}" class="mt-4">
+                    <h3>Paiements</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Montant</th>
+                                <th>Méthode</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="payment : ${payments}">
+                                <td th:text="${payment.payment_date}"></td>
+                                <td th:text="${payment.amount}"></td>
+                                <td th:text="${payment.payment_source}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Offre associée -->
+                <div th:if="${offer != null}" class="mt-4">
+                    <h3>Offre associée</h3>
+                    <p><strong>ID:</strong> <span th:text="${offer.id}"></span></p>
+                    <p><strong>Titre:</strong> <span th:text="${offer.external_id} ?: 'Non spécifié'"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments/footer"></div>
+</body>
+</html>

@@ -2,6 +2,7 @@ package com.spring.spring.dto.offer;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.spring.spring.dto.mapping.InvoiceDTO;
 import com.spring.spring.dto.mapping.InvoiceLineDTO;
 
@@ -14,6 +15,7 @@ import lombok.Setter;
 public class OfferDTO {
     private Long id;
     private String external_id;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String sent_at;
     private String source_type;
     private Long source_id;

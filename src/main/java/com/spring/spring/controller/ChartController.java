@@ -54,23 +54,44 @@ public class ChartController {
     @GetMapping("/chart2")
     public String getChart2Data(
             @RequestParam(required = false) String year,
-            @RequestParam(required = false) String month,
+            @RequestParam(required = false) String startMonth,
+            @RequestParam(required = false) String endMonth,
             Model model,
             HttpSession session) {
         try {
             Chart2ResponseDTO response = chartModel.getChart2Data(session);
             List<Chart2DataDTO> filteredData = response.getData();
 
-            if (year != null && !year.isEmpty()) {
-                filteredData = filteredData.stream()
-                    .filter(d -> d.getPayment_month().startsWith(year))
-                    .collect(Collectors.toList());
-            }
-            if (month != null && !month.isEmpty()) {
-                filteredData = filteredData.stream()
-                    .filter(d -> d.getPayment_month().substring(5, 7).equals(month))
-                    .collect(Collectors.toList());
-            }
+            // Debugging : Afficher les paramètres reçus
+            logger.info("Paramètres reçus - year: {}, startMonth: {}, endMonth: {}", year, startMonth, endMonth);
+
+            // Appliquer les filtres de manière combinée
+            filteredData = filteredData.stream()
+                .filter(d -> {
+                    String paymentMonth = d.getPayment_month(); // Format attendu : "YYYY-MM"
+                    String paymentYear = paymentMonth.substring(0, 4);
+                    String paymentMonthNum = paymentMonth.substring(5, 7);
+
+                    // Filtre par année (si spécifié)
+                    boolean matchesYear = (year == null || year.isEmpty()) || paymentYear.equals(year);
+
+                    // Filtre par mois de début (si spécifié)
+                    boolean matchesStartMonth = (startMonth == null || startMonth.isEmpty()) || paymentMonthNum.compareTo(startMonth) >= 0;
+
+                    // Filtre par mois de fin (si spécifié)
+                    boolean matchesEndMonth = (endMonth == null || endMonth.isEmpty()) || paymentMonthNum.compareTo(endMonth) <= 0;
+
+                    // Debugging : Afficher les valeurs pour chaque entrée
+                    logger.debug("paymentMonth: {}, matchesYear: {}, matchesStartMonth: {}, matchesEndMonth: {}", 
+                                paymentMonth, matchesYear, matchesStartMonth, matchesEndMonth);
+
+                    // Retourner true si tous les critères applicables sont satisfaits
+                    return matchesYear && matchesStartMonth && matchesEndMonth;
+                })
+                .collect(Collectors.toList());
+
+            // Debugging : Afficher les données filtrées
+            logger.info("Données filtrées : {}", filteredData);
 
             String chartDataJson = objectMapper.writeValueAsString(filteredData);
             model.addAttribute("status", response.getStatus());
@@ -84,7 +105,8 @@ public class ChartController {
             model.addAttribute("years", years);
 
             model.addAttribute("selectedYear", year);
-            model.addAttribute("selectedMonth", month);
+            model.addAttribute("selectedStartMonth", startMonth);
+            model.addAttribute("selectedEndMonth", endMonth);
             return "pages/graph/chart2";
         } catch (Exception e) {
             logger.error("Error in getChart2Data: {}", e.getMessage());

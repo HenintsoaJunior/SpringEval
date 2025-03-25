@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class InvoiceResponseDTO {
     private String status;
-    private InvoiceDataDTO data;
+    private InvoiceDTO data; // Type InvoiceDTO
     private Object errors;
 }
