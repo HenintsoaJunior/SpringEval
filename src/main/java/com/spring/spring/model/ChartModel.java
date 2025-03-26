@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,9 +27,14 @@ public class ChartModel {
     private RestTemplate restTemplate;
 
     private static final Logger logger = LoggerFactory.getLogger(ChartModel.class);
-    private static final String CHART1_API_URL = "http://localhost:81/api/chart1";
-    private static final String CHART2_API_URL = "http://localhost:81/api/chart2";
-    private static final String CHART3_API_URL = "http://localhost:81/api/chart3";
+
+    // Injection de la propriété base-url depuis le fichier de configuration
+    @Value("${api.base-url}")
+    private String baseUrl;
+
+    private static final String CHART1_API_PATH = "/api/chart1";
+    private static final String CHART2_API_PATH = "/api/chart2";
+    private static final String CHART3_API_PATH = "/api/chart3";
 
     private HttpHeaders createAuthHeaders(HttpSession session) {
         HttpHeaders headers = new HttpHeaders();
@@ -39,19 +45,13 @@ public class ChartModel {
         return headers;
     }
 
-    /**
-     * Récupère les données pour le graphique 1
-     * @param session Session HTTP contenant le token d'authentification
-     * @return Chart1ResponseDTO contenant les données du graphique 1
-     * @throws Exception en cas d'erreur
-     */
     public Chart1ResponseDTO getChart1Data(HttpSession session) throws Exception {
         try {
             HttpHeaders headers = createAuthHeaders(session);
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             ResponseEntity<Chart1ResponseDTO> responseEntity = restTemplate.exchange(
-                CHART1_API_URL,
+                baseUrl + CHART1_API_PATH, // Utilisation de baseUrl
                 HttpMethod.GET,
                 entity,
                 Chart1ResponseDTO.class
@@ -74,13 +74,13 @@ public class ChartModel {
         }
     }
 
-    public Chart1ResponseDTO getChart1Data(HttpSession session,String external_id) throws Exception {
+    public Chart1ResponseDTO getChart1Data(HttpSession session, String external_id) throws Exception {
         try {
             HttpHeaders headers = createAuthHeaders(session);
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             ResponseEntity<Chart1ResponseDTO> responseEntity = restTemplate.exchange(
-                CHART1_API_URL,
+                baseUrl + CHART1_API_PATH, // Utilisation de baseUrl
                 HttpMethod.GET,
                 entity,
                 Chart1ResponseDTO.class
@@ -111,20 +111,13 @@ public class ChartModel {
         }
     }
 
-
-    /**
-     * Récupère les données pour le graphique 2
-     * @param session Session HTTP contenant le token d'authentification
-     * @return Chart2ResponseDTO contenant les données du graphique 2
-     * @throws Exception en cas d'erreur
-     */
     public Chart2ResponseDTO getChart2Data(HttpSession session) throws Exception {
         try {
             HttpHeaders headers = createAuthHeaders(session);
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             ResponseEntity<Chart2ResponseDTO> responseEntity = restTemplate.exchange(
-                CHART2_API_URL,
+                baseUrl + CHART2_API_PATH, // Utilisation de baseUrl
                 HttpMethod.GET,
                 entity,
                 Chart2ResponseDTO.class
@@ -147,19 +140,13 @@ public class ChartModel {
         }
     }
 
-    /**
-     * Récupère les données pour le graphique 3
-     * @param session Session HTTP contenant le token d'authentification
-     * @return Chart3ResponseDTO contenant les données du graphique 3
-     * @throws Exception en cas d'erreur
-     */
     public Chart3ResponseDTO getChart3Data(HttpSession session) throws Exception {
         try {
             HttpHeaders headers = createAuthHeaders(session);
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             ResponseEntity<Chart3ResponseDTO> responseEntity = restTemplate.exchange(
-                CHART3_API_URL,
+                baseUrl + CHART3_API_PATH, // Utilisation de baseUrl
                 HttpMethod.GET,
                 entity,
                 Chart3ResponseDTO.class
