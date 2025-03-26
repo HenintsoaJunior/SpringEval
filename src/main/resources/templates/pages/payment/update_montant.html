@@ -1,5 +1,10 @@
 <div th:replace="fragments/header"></div>
+<style>
+    .text-red {
+    color: red;
+}
 
+</style>
 <div class="form-container">
     <div class="table-header">
         <div class="table-icon">☙</div>
@@ -9,7 +14,11 @@
     <div class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></div>
     <div class="success-message" th:if="${successMessage}" th:text="${successMessage}"></div>
 
-    <div class="amount-due" th:if="${amountDue}" th:text="'Amount Due : ' + (${amountDue})"></div>
+    <!-- Modification ici : suppression de th:if ou ajustement -->
+    <div class="amount-due" 
+        th:text="'Amount Due : ' + (${amountDue != null ? amountDue : 0})"
+        th:classappend="${amountDue != null and amountDue <= 0.0} ? 'text-red' : ''">
+    </div>
 
     <form action="/api/spring/valid-update" method="post" onsubmit="return validateForm()">
         <table class="form-table">
@@ -42,11 +51,11 @@
     function validateForm() {
         // Récupérer les valeurs
         const montant = parseFloat(document.getElementById('montant').value);
-        const amountDue = parseFloat(/*[[${amountDue}]]*/ 0); // amountDue en centimes
+        const amountDue = parseFloat(/*[[${amountDue != null ? amountDue : 0}]]*/ 0); // amountDue avec valeur par défaut 0
         
-        // Vérifier si amountDue existe
-        if (amountDue) {
-            // Convertir amountDue de centimes en euros
+        // Vérifier si amountDue existe et n'est pas null
+        if (amountDue !== null) {
+            // Convertir amountDue de centimes en euros si nécessaire (ajustez selon votre logique)
             const amountDueInEuros = amountDue;
             
             // Vérifier si le montant saisi dépasse le montant dû

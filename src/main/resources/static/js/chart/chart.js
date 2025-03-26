@@ -147,6 +147,95 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     // Chart 2: Statistiques des Paiements
+    // let paymentChartData;
+
+    // try {
+    //     paymentChartData = JSON.parse(chart2DataJson);
+    // } catch (e) {
+    //     paymentChartData = [];
+    //     console.error('Error parsing chart2DataJson:', e);
+    // }
+
+    // if (paymentChartData && Array.isArray(paymentChartData) && paymentChartData.length > 0) {
+    //     const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 
+    //                     'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+        
+    //     // Create labels for each month
+    //     const labels = paymentChartData.map(item => {
+    //         const [year, month] = item.payment_month.split('-');
+    //         const monthName = monthNames[parseInt(month) - 1];
+    //         return `${monthName} ${year}`;
+    //     });
+
+    //     const paidAmounts = paymentChartData.map(item => parseFloat(item.total_paid_amount) || 0);
+    //     const invoicedAmounts = paymentChartData.map(item => parseFloat(item.total_invoiced_amount) || 0);
+    //     const outstandingAmounts = paymentChartData.map(item => parseFloat(item.outstanding_amount) || 0);
+
+    //     const ctx = document.getElementById('paymentChart').getContext('2d');
+    //     const chart = new Chart(ctx, {
+    //         type: 'line',  // Changed from 'bar' to 'line'
+    //         data: {
+    //             labels: labels,
+    //             datasets: [{
+    //                 label: 'Montant payé',
+    //                 data: paidAmounts,
+    //                 backgroundColor: 'rgba(54, 162, 235, 0.6)',
+    //                 borderColor: 'rgba(54, 162, 235, 1)',
+    //                 borderWidth: 1,
+    //                 fill: false
+    //             }, {
+    //                 label: 'Montant facturé',
+    //                 data: invoicedAmounts,
+    //                 backgroundColor: 'rgba(75, 192, 192, 0.6)',
+    //                 borderColor: 'rgba(75, 192, 192, 1)',
+    //                 borderWidth: 1,
+    //                 fill: false
+    //             }, {
+    //                 label: 'Montant restant',
+    //                 data: outstandingAmounts,
+    //                 backgroundColor: 'rgba(255, 99, 132, 0.6)',
+    //                 borderColor: 'rgba(255, 99, 132, 1)',
+    //                 borderWidth: 1,
+    //                 fill: false
+    //             }]
+    //         },
+    //         options: {
+    //             responsive: true,
+    //             scales: {
+    //                 y: {
+    //                     beginAtZero: true,
+    //                     title: { display: true, text: 'Montant' }
+    //                 },
+    //                 x: {
+    //                     title: { display: true, text: 'Mois' },
+    //                     ticks: {
+    //                         autoSkip: false,
+    //                         maxRotation: 45,
+    //                         minRotation: 45
+    //                     }
+    //                 }
+    //             },
+    //             plugins: {
+    //                 legend: { position: 'top' },
+    //                 title: {
+    //                     display: true,
+    //                     text: `Statistiques des paiements pour ${selectedYear}` + 
+    //                             (selectedMonth ? ` - ${monthNames[parseInt(selectedMonth) - 1]}` : '')
+    //                 },
+    //                 tooltip: {
+    //                     callbacks: {
+    //                         label: function(context) {
+    //                             const label = context.dataset.label || '';
+    //                             const value = context.parsed.y || 0;
+    //                             return `${label}: ${value.toLocaleString()}`;
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     });
+    // }
+
     let paymentChartData;
 
     try {
@@ -173,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const ctx = document.getElementById('paymentChart').getContext('2d');
         const chart = new Chart(ctx, {
-            type: 'line',  // Changed from 'bar' to 'line'
+            type: 'bar',  // Changed from 'line' to 'bar'
             data: {
                 labels: labels,
                 datasets: [{
@@ -181,22 +270,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     data: paidAmounts,
                     backgroundColor: 'rgba(54, 162, 235, 0.6)',
                     borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1,
-                    fill: false
+                    borderWidth: 1
                 }, {
                     label: 'Montant facturé',
                     data: invoicedAmounts,
                     backgroundColor: 'rgba(75, 192, 192, 0.6)',
                     borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                    fill: false
+                    borderWidth: 1
                 }, {
                     label: 'Montant restant',
                     data: outstandingAmounts,
                     backgroundColor: 'rgba(255, 99, 132, 0.6)',
                     borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1,
-                    fill: false
+                    borderWidth: 1
                 }]
             },
             options: {

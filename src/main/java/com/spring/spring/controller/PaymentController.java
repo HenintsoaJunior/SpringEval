@@ -62,7 +62,14 @@ public class PaymentController {
 
         try {
             Double amountDue = paymentModel.getInvoiceAmountDue(externalId, session);
-            model.addAttribute("amountDue", amountDue); // Add amount_due to the model
+            logger.info("AMOUUND DUE ZANDRY A "+amountDue);
+            
+            if (amountDue <= 0.0) {
+                logger.info("AMOUUND DUE EST BIEN LA");
+                model.addAttribute("amountDue", 0.0);
+            }
+            model.addAttribute("amountDue", amountDue); 
+            
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
         }

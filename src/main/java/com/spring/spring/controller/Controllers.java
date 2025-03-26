@@ -9,10 +9,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.spring.dto.chart1.Chart1ResponseDTO;
 import com.spring.spring.dto.chart2.Chart2DataDTO;
 import com.spring.spring.dto.chart2.Chart2ResponseDTO;
+import com.spring.spring.dto.chart2.Chart2SummaryDTO;
 import com.spring.spring.dto.chart3.Chart3DataDTO;
 import com.spring.spring.dto.chart3.Chart3ResponseDTO;
 import com.spring.spring.dto.mapping.ClientDTO;
@@ -34,6 +36,7 @@ public class Controllers {
     @Autowired private ChartModel chartModel;
     @Autowired private ObjectMapper objectMapper;
 
+
     @GetMapping("/api/spring/dashboard")
     public String showDashboard(
             @RequestParam(required = false) String year,
@@ -51,6 +54,7 @@ public class Controllers {
             loadChart1Data(model, session, external_id);
             loadChart2Data(model, session, year, startMonth, endMonth);
             loadChart3Data(model, session, status);
+            loadPayemntPrice(model, session);
             model.addAttribute("status", "success");
         } catch (Exception e) {
             handleException(model, e);
@@ -62,6 +66,34 @@ public class Controllers {
         return "pages/dashboard";
     }
 
+    private void loadPayemntPrice(Model model, HttpSession session) {
+        try {
+            Chart2ResponseDTO chart2Response = chartModel.getChart2Data(session);
+            
+            List<Chart2SummaryDTO> summaryData = chart2Response.getData().stream()
+                .map(data -> new Chart2SummaryDTO(
+                    data.getTotal_paid_amount(),
+                    data.getTotal_invoiced_amount(),
+                    data.getOutstanding_amount()
+                ))
+                .collect(Collectors.toList());
+            
+            String chart2DataJson = objectMapper.writeValueAsString(summaryData);
+            model.addAttribute("chart2Status", chart2Response.getStatus());
+            //model.addAttribute("paymentsData", chart2DataJson);
+            String data = chart2DataJson;
+            String jsonPart = data.substring(data.indexOf("["));
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(jsonPart).get(0);
+            
+            model.addAttribute("paymentsData", jsonNode.get("total_paid_amount").asText());
+            
+        } catch (Exception e) {
+            logger.error("Error in Chart 2 summary data: {}", e.getMessage());
+            model.addAttribute("chart2Error", e.getMessage());
+        }
+    }
+
     private void loadGeneralStatistics(Model model, HttpSession session) throws Exception {
         model.addAttribute("totalClients", clientModel.totalClients(session));
         model.addAttribute("totalProjects", projectModel.totalProjects(session));
@@ -69,6 +101,7 @@ public class Controllers {
         model.addAttribute("totalOffers", offerModel.totalOffers(session));
         model.addAttribute("totalInvoices", invoiceModel.totalInvoices(session));
         model.addAttribute("totalPayments", paymentModel.totalPayments(session));
+        model.addAttribute("totalFacture", invoiceModel.getTotalInvoicesPrice(session));
     }
 
     private void loadClientData(Model model, HttpSession session, String external_id) throws Exception {

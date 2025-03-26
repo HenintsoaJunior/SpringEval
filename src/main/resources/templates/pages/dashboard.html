@@ -343,6 +343,7 @@
     <div class="dashboard-container">
         <h1>Tableau de Bord</h1>
         
+        
         <!-- Message d'erreur global -->
         <div th:if="${error}" class="error-message">
             <p th:text="${error}"></p>
@@ -372,12 +373,17 @@
             </a>
             <a th:href="@{/api/spring/invoices}" class="stat-card">
                 <h3><i class="fas fa-file-invoice"></i> Factures</h3>
+
+                <div class="stat-value" style="font-size: 20px;" th:text="${totalFacture}">0</div>
                 <div class="stat-value" th:text="${totalInvoices}">0</div>
+
                 <i class="fas fa-file-invoice stat-icon-bg"></i>
             </a>
             <a th:href="@{/api/spring/payments}" class="stat-card">
                 <h3><i class="fas fa-money-bill-wave"></i> Paiements</h3>
                 <div class="stat-value" th:text="${totalPayments}">0</div>
+                <div class="stat-value" th:text="${paymentsData}">0</div>
+                
                 <i class="fas fa-money-bill-wave stat-icon-bg"></i>
             </a>
         </div>
@@ -410,6 +416,9 @@
                     <div class="chart-title">Montants facturés et pourcentage de paiement par client</div>
                     <canvas id="mainChart"></canvas>
                 </div>
+            </div>
+
+            <div id="charts-wrapper">
                 <div th:if="${chart1Data != null}" class="chart-container">
                     <div class="chart-title">Nombre de factures par client</div>
                     <canvas id="invoiceChart"></canvas>

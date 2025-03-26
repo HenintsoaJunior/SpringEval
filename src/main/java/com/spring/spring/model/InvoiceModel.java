@@ -1,5 +1,7 @@
 package com.spring.spring.model;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import com.spring.spring.dto.invoice.InvoiceDTO;
 import com.spring.spring.dto.invoice.InvoiceListResponseDTO;
 import com.spring.spring.dto.invoice.InvoiceResponseDTO;
+import com.spring.spring.dto.invoiceline.InvoiceLineDTO;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -150,6 +153,55 @@ public class InvoiceModel {
         } catch (Exception e) {
             logger.error("Error retrieving total invoices: {}", e.getMessage());
             throw new Exception("Erreur lors de la récupération du nombre total de factures: " + e.getMessage());
+        }
+    }
+
+    /**
+ * Calcule le prix total de toutes les factures
+ * @param session Session HTTP contenant le token d'authentification
+ * @return Le prix total de toutes les factures
+ * @throws Exception en cas d'erreur
+ */
+    public long getTotalInvoicesPrice(HttpSession session) throws Exception {
+        String apiUrl = BASE_API_URL;
+
+        try {
+            HttpHeaders headers = createAuthHeaders(session);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            InvoiceListResponseDTO response = restTemplate.exchange(
+                apiUrl,
+                HttpMethod.GET,
+                entity,
+                InvoiceListResponseDTO.class
+            ).getBody();
+
+            if (response != null && "success".equals(response.getStatus()) && response.getData() != null) {
+                long totalPrice = 0;
+                List<InvoiceDTO> invoices = response.getData().getInvoices();
+                
+                for (InvoiceDTO invoice : invoices) {
+                    if (invoice.getInvoice_lines() != null) {
+                        for (com.spring.spring.dto.mapping.InvoiceLineDTO line : invoice.getInvoice_lines() ) {
+                            if (line.getPrice() != null && line.getQuantity() != null) {
+                                totalPrice += line.getPrice() * line.getQuantity();
+                            }
+                        }
+                    }
+                }
+                
+                logger.info("Successfully calculated total invoices price: {}", totalPrice);
+                return totalPrice;
+            } else {
+                logger.warn("Invalid response from API when calculating total invoices price");
+                throw new Exception("Impossible de calculer le prix total des factures");
+            }
+        } catch (HttpClientErrorException.Unauthorized e) {
+            logger.warn("Unauthorized access attempt: {}", e.getMessage());
+            throw new Exception("Accès non autorisé");
+        } catch (Exception e) {
+            logger.error("Error calculating total invoices price: {}", e.getMessage());
+            throw new Exception("Erreur lors du calcul du prix total des factures: " + e.getMessage());
         }
     }
 }
